@@ -1,29 +1,79 @@
-<!DOCTYPE html>
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <title>Sasha's Website</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
-    <h1>Welcome to my website!</h1>
-    <p> My name is Sasha. I'm currently an engineer working on cryptography-related projects.</p>
-    <p> Professionally, I'm also excited about theoretical computer science, quantum computing, and cryptography.</p>
-    <p> Here are some links about me: </p>
-    <ul>
-        <li> <a href="https://www.linkedin.com/in/alexander-frolov-49584a97/">My LinkedIn</a></li>
-        <li> <a href="https://www.github.com/sashafrolov">My GitHub</a></li>
-        <li> Some papers I am a co-author on:
-            <ul>
-                <li><a href="https://eprint.iacr.org/2020/934">CanDID Decentralized Identity</a></li>
-                <li><a href="https://arxiv.org/abs/1810.05610">Statistics of Solar Flares Found from X-Ray data</a></li>
-            </ul>
-        </li>
-        <li> You can contact me at sasha (at-sign) sasha (period) place</li>
+---
+layout: default
+---
+
+
+
+<div class="home">
+
+{% include image.html url="/images/IMG_0623.PNG" caption="At the ПЭУ in Yerevan. Photo Credit: Mitya Lyalin." width=300 align="right" %}
+
+
+<h1>Bio</h1>
+	
+<p>My name is Alexander Frolov, though I often go by Sasha. Alexander and Sasha Frolov are the same person.
+    I'm currently a first-year Ph.D. student at the University of Maryland working on cryptography. 
+    My advisors are Ian Miers and Gabe Kaptchuk. Previously, I was an engineer on the Cryptography Engineering 
+    team at Meta for 2.5 years, and before that I did my masters and bachelors at Cornell University. My hobbies
+    include cycling, swimming, stand-up/sketch comedy and editing Wikipedia.
+</p>
+
+<h1>Recent Blog Posts</h1>
+<ul>
+    {% for post in site.posts %}
+      {% capture y %}{{post.date | date:"%Y"}}{% endcapture %}
+      <li class="listing-item">
+        <!-- <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time> -->
+        <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+      </li>
+    {% endfor %}
     </ul>
-    <p> Some hobbies I do are geocaching, hiking, comedy, editing Wikipedia and making memes.</p>
-    <p> When I have an idea for some blog posts, I'll also put up a blog on here.</p>
 
+<h1>Publications</h1>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-</body>
+<ul class="listing">
+<li>
+    <a href="https://eprint.iacr.org/2020/934"><b>CanDID: Can-Do Decentralized Identity with Legacy Compatibility, Sybil-Resistance, and Accountability</b><br></a>
+    <i>Deepak Maram, Harjasleen Malvai, Fan Zhang, Nerla Jean-Louis, <b>Alexander Frolov</b>,
+        Tyler Kell, Tyrone Lobban, Christine Moy, Ari Juels, and Andrew Miller</i><br>
+    IEEE S&P 2021<br>
+    <!-- <a href=""><div class="color-button">cite</div></a><a href=""><div class="color-button">paper</div></a> -->
+</li> <br>
+<li>
+    <a href="https://arxiv.org/abs/1810.05610"><b>Statistical Properties of Soft X-ray emission of Solar Flares</b><br></a>
+    <i>Viacheslav M Sadykov, Alexander G Kosovichev, Irina N Kitiashvili, <b>Alexander
+        Frolov</b></i><br>
+    The Astrophysical Journal<br>
+    <!-- <a href=""><div class="color-button">cite</div></a><a href=""><div class="color-button">paper</div></a> -->
+</li> 
+</ul>
+
+<h1>Industry Research</h1>
+
+<ul class="listing">
+    <li>
+        <a href="https://engineering.fb.com/2024/11/12/security/how-meta-built-large-scale-cryptographic-monitoring/"><b>How Meta Built Large-Scale Cryptographic Monitoring</b><br></a>
+        <i>Hussain Humadi, <b>Sasha Frolov</b>, Rafael Misoczki, Dong Wu.</i><br>
+        Post on Meta Engineering blog <br>
+        <!-- <a href=""><div class="color-button">cite</div></a><a href=""><div class="color-button">paper</div></a> -->
+    </li> <br>
+
+    <li>
+        <a href="https://datatracker.ietf.org/doc/draft-gueron-cfrg-dndkgcm/"><b>DNDK AES GCM</b><br></a>
+        <i>Work done as part of Meta Cryptography Infrastructure team.</i><br>
+        <a href="https://iacr.org/submit/files/slides/2024/rwc/rwc2024/105/slides.pdf">Talk at Real World Crypto 2024 by Shay Gueron</a><br>
+        <a href="https://datatracker.ietf.org/doc/draft-gueron-cfrg-dndkgcm/">RFC in submission</a><br>
+        <!-- <a href=""><div class="color-button">cite</div></a><a href=""><div class="color-button">paper</div></a> -->
+    </li> <br>
+
+    <li>
+        <a href="https://arxiv.org/abs/2312.04724"><b>Purple Llama CyberSecEval: A Secure Coding Benchmark for Language Models</b><br></a>
+        <i>Manish Bhatt, Sahana Chennabasappa, Cyrus Nikolaidis, Shengye Wan, Ivan Evtimov, Dominik Gabi, Daniel Song, Faizan Ahmad, 
+            Cornelius Aschermann, Lorenzo Fontana, <b>Sasha Frolov</b>, Ravi Prakash Giri, Dhaval Kapil, Yiannis Kozyrakis, David LeBlanc, 
+            James Milazzo, Aleksandar Straumann, Gabriel Synnaeve, Varun Vontimitta, Spencer Whitman, Joshua Saxe.</i><br>
+        Preprint/Presented at a workshop at NeurIPS 2023<br>
+        <!-- <a href=""><div class="color-button">cite</div></a><a href=""><div class="color-button">paper</div></a> -->
+    </li>
+</ul>
+
+</div>

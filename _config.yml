@@ -1,0 +1,24 @@
+# Site settings
+title: Sasha Frolov's Website
+email:  sfrolov (at sign) umd (dot) edu
+description: > # this means to ignore newlines until "baseurl:"
+  bem bom bom
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://sasha.place" # the base hostname & protocol for your site
+bsky_username: galois-counter
+github_username:  sashafrolov
+scholar_url: CfXEkmoAAAAJ
+linkedin_url: sashafrolov
+
+# Build settings
+markdown: kramdown
+
+# Other options
+permalink: blog/:year/:month/:title
+job.title: "Phd Student"
+excerpt_separator: "<!--more-->"
+
+# SEO stuff
+# google_author: ""
+# google_site_verification: ""
+# bing_webmastertools_id: ""
