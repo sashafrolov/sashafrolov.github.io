@@ -1,0 +1,37 @@
+---
+layout: post
+title:  "2 New Applications of zk-SNARKs (Free Ideas!)"
+date:   2024-12-24 12:30:15
+categories: zkproofs
+---
+# 2 free ideas I don't have the time to execute on
+
+This blog post is inspired by [a similar blog post by Soatok](https://soatok.blog/2024/12/09/ideas-and-execution/). This semester at grad school, I had a couple of ideas for real-world applications where zk-SNARKs would be useful, but I didn't have the time to write code or implement them. I particularly think that idea 1 would be a fun startup/at least an Ethereum hackathon idea.
+
+## Idea 1: zk Quantitative Strategies for Stock Trading
+This idea is inspired by an issue of Matt Levine's Money Stuff. It is [the story about Jane Street vs Millennium here](https://newsletterhunt.com/emails/56933). To summarize the story, there is an ongoing lawsuit between two large quantitative hedge funds. Jane Street is suing Millennium because they believe that some people Millennium poached from Jane Street stole some sort of simple but counterintuitive and lucrative quantitative trading strategy and started using it at Millennium. The evidence has to do with patterns in the market changing and Jane Street's profits being affected. Quantitative strategies are simple mechanical rules for how to trade stocks. They can range anywhere from simple rules like "buy $NVDA when it has gone down 15% in the last day" to complicated ML models that use a lot of data. They can be worth billions of dollars.
+
+A recent direction of work in zero-knowledge proofs is "exploit sharing", where you provide a proof that you know an input to a program that results in an exploit (such as [this paper](https://eprint.iacr.org/2022/1223)). An example scenario where this would be useful is where you are trying to responsibly disclose the fact that you have found an exploit in a major piece of software. You could post a zk-SNARK proving that running the program on a secret input produces exploit-like behavior. Alternatively, you could use this to sell zero-day bugs in a way that requires less trust.
+
+I think there is an interesting combination of these two ideas in "Zero-Knowledge Quantitative Strategy Sharing". Here, a person trying to sell a quantitative strategy (like an ex-Jane Street person), would provide a zero-knowledge proof that their strategy performs well on past data. Furthermore, they could provide a commitment to their strategy, and then provide a zero-knowledge proof a month later that the strategy performed well on the market in that time. This could decrease the level of trust required in these kinds of financial transactions. 
+
+You can go further with this idea. You could have an anonymous, trustless hedge fund, where anonymous quants prove that they know effective quantitative strategies before they sell them to you. Even further, the hedge fund could not even be required to know the strategies it is trading on. The strategy owner could just send proofs that the strategy they committed to produced a certain sequence of trades, on which the hedge fund will then trade. In this system, anonymous analysts could get access to capital, just by proving that they know effective strategies.
+
+This would probably improve market liquidity/efficiency by having fewer hedge funds have a monopoly over certain trades/strategies.
+
+## Idea 2: HSTS Header Database for Tor with zk-SNARKs
+To learn more about this idea, please look at [this paper from PETS 2024](https://petsymposium.org/popets/2024/popets-2024-0020.pdf) called "CoStricTor: Collaborative HTTP Strict Transport Security in Tor Browser".
+
+To briefly explain the aforementioned paper, HSTS is a feature of HTTPS that lets a website say "this website will use HTTPS from now on" (rather than HTTP), which prevents downgrade attacks to HTTP. It is a security improvement most of the time. However, HSTS headers are stored in a client's state (they are often called "supercookies" because they are part of a client's state at a different level), and this means that a malicious actor can fingerprint clients by sending different HSTS headers for different websites. You can read more about this idea [here](https://arstechnica.com/information-technology/2015/01/browsing-in-privacy-mode-super-cookies-can-track-you-anyway/). Because of this privacy issue, the Tor browser has yet to implement HSTS, even though it would be a security upgrade in many ways. 
+
+This attack is not possible if clients can compare the HSTS headers they receive from different websites to make sure that a website owner isn't using HSTS to fingerprint users. The paper I linked builds a system that runs such a database as part of the Tor network. They focus on building this distributed database in a privacy-preserving way. This includes using differential privacy and other techniques. Their system scales fairly well.
+
+There is one major issue with this system, which is that malicious users can add garbage to the distributed HSTS header database. This system does not validate the reported headers at all (and the differentially private nature of the database obscures exactly how/what bad data was submitted). There is a potential application of zk-SNARKs here! At a high level, when a user adds an HSTS header to the database, they provide a zero-knowledge proof showing that they actually received the HSTS header they are reporting as part of an HTTP connection with the website. This allows the system to authenticate the reports it receives.
+
+On its face, this protocol doesn't work. The issue is that you normally can't use zk-SNARKs directly to build a TLS oracle/zkTLS setup. You normally need trusted hardware or MPC to check that a piece of data actually came from a TLS connection with some party. The Tor setting offers an easy fix. Your Tor traffic necessarily goes through an exit node before going to its destination. The exit node your Tor traffic goes through sees your TLS traffic with the website you are communicating with. The user can attach a zero-knowledge proof that the TLS traffic that the exit node sees decrypts to a stream containing a given HSTS header. This gives you a TLS oracle!
+
+Then, the exit node could verify the zero-knowledge proof, and submit it to the shared database. You now have the CoStricTor system with data validation (after working out some details). This is a decent bit of engineering, but I think it would be cool.
+
+## Conclusion
+
+I hope you found this interesting. I am giving these ideas away for free, but if you do use the idea, please mention me somewhere/tell me about it. Thanks!

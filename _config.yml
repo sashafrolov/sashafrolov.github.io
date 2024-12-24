@@ -5,7 +5,7 @@ description: > # this means to ignore newlines until "baseurl:"
   bem bom bom
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://sasha.place" # the base hostname & protocol for your site
-bsky_username: galois-counter
+bsky_username: sasha.place
 github_username:  sashafrolov
 scholar_url: CfXEkmoAAAAJ
 linkedin_url: sashafrolov

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>2 New Applications of zk-SNARKs (Free Ideas!)</title>
+  <meta name="description" content="2 free ideas I don’t have the time to execute onThis blog post is inspired by a similar blog post by Soatok. This semester at grad school, I had a couple of ...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4000/blog/2024/12/new-snark-applications">
+  <link rel="alternate" type="application/rss+xml" title="Sasha Frolov's Website" href="http://localhost:4000/feed.xml" />
+<link rel='stylesheet' id='open-sans-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300italic%2C400italic%2C600italic%2C300%2C400%2C600&#038;subset=latin%2Clatin-ext&#038;ver=4.2.4' type='text/css' media='all' />
+<link href='https://fonts.googleapis.com/css?family=Titillium+Web:600italic,600,400,400italic' rel='stylesheet' type='text/css'>
+
+
+
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Sasha Frolov's Website</a>
+
+
+    <nav class="site-nav">
+
+      <a href="#" class="menu-icon menu.open">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>  
+
+      <h1>Main Navigation</h1>
+      <div class="site-title" style="margin-top: 9px;">
+ <ul>
+
+    
+    
+     <li><a href="/blog/" class="site-title">My Blog</a>
+    
+    </li>
+    
+    </ul>
+
+
+     </div>  
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">2 New Applications of zk-SNARKs (Free Ideas!)</h1>
+    <p class="post-meta">Posted on December 24, 2024 by   
+
+  in
+  
+  <a href="/categories/#zkproofs" title="zkproofs">zkproofs</a>&nbsp;
+  
+
+
+</p>
+  </header>
+
+  <article class="post-content">
+    <h1 id="2-free-ideas-i-dont-have-the-time-to-execute-on">2 free ideas I don’t have the time to execute on</h1>
+
+<p>This blog post is inspired by <a href="https://soatok.blog/2024/12/09/ideas-and-execution/">a similar blog post by Soatok</a>. This semester at grad school, I had a couple of ideas for real-world applications where zk-SNARKs would be useful, but I didn’t have the time to write code or implement them. I particularly think that idea 1 would be a fun startup/at least an Ethereum hackathon idea.</p>
+
+<h2 id="idea-1-zk-quantitative-strategies-for-stock-trading">Idea 1: zk Quantitative Strategies for Stock Trading</h2>
+<p>This idea is inspired by an issue of Matt Levine’s Money Stuff. It is <a href="https://newsletterhunt.com/emails/56933">the story about Jane Street vs Millennium here</a>. To summarize the story, there is an ongoing lawsuit between two large quantitative hedge funds. Jane Street is suing Millennium because they believe that some people Millennium poached from Jane Street stole some sort of simple but counterintuitive and lucrative quantitative trading strategy and started using it at Millennium. The evidence has to do with patterns in the market changing and Jane Street’s profits being affected. Quantitative strategies are simple mechanical rules for how to trade stocks. They can range anywhere from simple rules like “buy $NVDA when it has gone down 15% in the last day” to complicated ML models that use a lot of data. They can be worth billions of dollars.</p>
+
+<p>A recent direction of work in zero-knowledge proofs is “exploit sharing”, where you provide a proof that you know an input to a program that results in an exploit (such as <a href="https://eprint.iacr.org/2022/1223">this paper</a>). An example scenario where this would be useful is where you are trying to responsibly disclose the fact that you have found an exploit in a major piece of software. You could post a zk-SNARK proving that running the program on a secret input produces exploit-like behavior. Alternatively, you could use this to sell zero-day bugs in a way that requires less trust.</p>
+
+<p>I think there is an interesting combination of these two ideas in “Zero-Knowledge Quantitative Strategy Sharing”. Here, a person trying to sell a quantitative strategy (like an ex-Jane Street person), would provide a zero-knowledge proof that their strategy performs well on past data. Furthermore, they could provide a commitment to their strategy, and then provide a zero-knowledge proof a month later that the strategy performed well on the market in that time. This could decrease the level of trust required in these kinds of financial transactions.</p>
+
+<p>You can go further with this idea. You could have an anonymous, trustless hedge fund, where anonymous quants prove that they know effective quantitative strategies before they sell them to you. Even further, the hedge fund could not even be required to know the strategies it is trading on. The strategy owner could just send proofs that the strategy they committed to produced a certain sequence of trades, on which the hedge fund will then trade. In this system, anonymous analysts could get access to capital, just by proving that they know effective strategies.</p>
+
+<p>This would probably improve market liquidity/efficiency by having fewer hedge funds have a monopoly over certain trades/strategies.</p>
+
+<h2 id="idea-2-hsts-header-database-for-tor-with-zk-snarks">Idea 2: HSTS Header Database for Tor with zk-SNARKs</h2>
+<p>To learn more about this idea, please look at <a href="https://petsymposium.org/popets/2024/popets-2024-0020.pdf">this paper from PETS 2024</a> called “CoStricTor: Collaborative HTTP Strict Transport Security in Tor Browser”.</p>
+
+<p>To briefly explain the aforementioned paper, HSTS is a feature of HTTPS that lets a website say “this website will use HTTPS from now on” (rather than HTTP), which prevents downgrade attacks to HTTP. It is a security improvement most of the time. However, HSTS headers are stored in a client’s state (they are often called “supercookies” because they are part of a client’s state at a different level), and this means that a malicious actor can fingerprint clients by sending different HSTS headers for different websites. You can read more about this idea <a href="https://arstechnica.com/information-technology/2015/01/browsing-in-privacy-mode-super-cookies-can-track-you-anyway/">here</a>. Because of this privacy issue, the Tor browser has yet to implement HSTS, even though it would be a security upgrade in many ways.</p>
+
+<p>This attack is not possible if clients can compare the HSTS headers they receive from different websites to make sure that a website owner isn’t using HSTS to fingerprint users. The paper I linked builds a system that runs such a database as part of the Tor network. They focus on building this distributed database in a privacy-preserving way. This includes using differential privacy and other techniques. Their system scales fairly well.</p>
+
+<p>There is one major issue with this system, which is that malicious users can add garbage to the distributed HSTS header database. This system does not validate the reported headers at all (and the differentially private nature of the database obscures exactly how/what bad data was submitted). There is a potential application of zk-SNARKs here! At a high level, when a user adds an HSTS header to the database, they provide a zero-knowledge proof showing that they actually received the HSTS header they are reporting as part of an HTTP connection with the website. This allows the system to authenticate the reports it receives.</p>
+
+<p>On its face, this protocol doesn’t work. The issue is that you normally can’t use zk-SNARKs directly to build a TLS oracle/zkTLS setup. You normally need trusted hardware or MPC to check that a piece of data actually came from a TLS connection with some party. The Tor setting offers an easy fix. Your Tor traffic necessarily goes through an exit node before going to its destination. The exit node your Tor traffic goes through sees your TLS traffic with the website you are communicating with. The user can attach a zero-knowledge proof that the TLS traffic that the exit node sees decrypts to a stream containing a given HSTS header. This gives you a TLS oracle!</p>
+
+<p>Then, the exit node could verify the zero-knowledge proof, and submit it to the shared database. You now have the CoStricTor system with data validation (after working out some details). This is a decent bit of engineering, but I think it would be cool.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I hope you found this interesting. I am giving these ideas away for free, but if you do use the idea, please mention me somewhere/tell me about it. Thanks!</p>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+<!--     <h2 class="footer-heading">Sasha Frolov's Website</h2> -->
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li><strong>Sasha Frolov's Website</strong></li>
+
+          <li>
+              <span class="icon  icon--email">
+                <svg fill="#828282" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+              </span>
+
+              <span class="username"> sfrolov (at sign) umd (dot) edu</span>
+          </li>
+
+          <li>Website built using <a href="https://github.com/svmiller/steve-ngvb-jekyll-template/tree/master">Steven Miller's template.</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="contact-list">
+          
+          <li>
+            <a href="https://github.com/sashafrolov">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">sashafrolov</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://bsky.app/profile/sasha.place">
+              <span class="icon  icon--bluesky">
+                <svg viewBox="0 0 512 512"><path fill="#828282" d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2c42.1-31.6 110.3-56 110.3 21.8c0 15.5-8.9 130.5-14.1 149.2C478.2 298 412 314.6 353.1 304.5c102.9 17.5 129.1 75.5 72.5 133.5c-107.4 110.2-154.3-27.6-166.3-62.9l0 0c-1.7-4.9-2.6-7.8-3.3-7.8s-1.6 3-3.3 7.8l0 0c-12 35.3-59 173.1-166.3 62.9c-56.5-58-30.4-116 72.5-133.5C100 314.6 33.8 298 15.7 233.1C10.4 214.4 1.5 99.4 1.5 83.9c0-77.8 68.2-53.4 110.3-21.8z"/></svg>
+              </span>
+
+              <span class="username">sasha.place</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+          <ul class="contact-list">
+            
+            <li>
+              <a href="https://scholar.google.com/citations?hl=en&user=CfXEkmoAAAAJ">
+                <span class="icon  icon--scholar">
+                  <svg viewBox="0 0 512 512"><path fill="#828282" d="M390.9 298.5c0 0 0 .1 .1 .1c9.2 19.4 14.4 41.1 14.4 64C405.3 445.1 338.5 512 256 512s-149.3-66.9-149.3-149.3c0-22.9 5.2-44.6 14.4-64h0c1.7-3.6 3.6-7.2 5.6-10.7c4.4-7.6 9.4-14.7 15-21.3c27.4-32.6 68.5-53.3 114.4-53.3c33.6 0 64.6 11.1 89.6 29.9c9.1 6.9 17.4 14.7 24.8 23.5c5.6 6.6 10.6 13.8 15 21.3c2 3.4 3.8 7 5.5 10.5zm26.4-18.8c-30.1-58.4-91-98.4-161.3-98.4s-131.2 40-161.3 98.4L0 202.7 256 0 512 202.7l-94.7 77.1z"/></svg>              </span>
+  
+                <span class="username">Google Scholar</span>
+              </a>
+            </li>
+            
+
+            
+            <li>
+              <a href="https://linkedin.com/in/sashafrolov/">
+                <span class="icon  icon--scholar">
+                  <svg viewBox="0 0 448 512"><path fill="#828282" d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z"/></svg></span>
+  
+                <span class="username">LinkedIn</span>
+              </a>
+            </li>
+            
+          </ul>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+  </body>
+
+</html>
+<!-- d.s.m.s.050600.062508.030515.080516.030818 | "Baby, I'm Yours" -->
