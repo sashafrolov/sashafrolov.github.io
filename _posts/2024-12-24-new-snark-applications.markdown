@@ -4,8 +4,6 @@ title:  "2 New Applications of zk-SNARKs (Free Ideas!)"
 date:   2024-12-24 12:30:15
 categories: zkproofs
 ---
-# 2 free ideas I don't have the time to execute on
-
 This blog post is inspired by [a similar blog post by Soatok](https://soatok.blog/2024/12/09/ideas-and-execution/). This semester at grad school, I had a couple of ideas for real-world applications where zk-SNARKs would be useful, but I didn't have the time to write code or implement them. I particularly think that idea 1 would be a fun startup/at least an Ethereum hackathon idea.
 
 ## Idea 1: zk Quantitative Strategies for Stock Trading

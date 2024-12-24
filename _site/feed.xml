@@ -6,15 +6,13 @@
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 24 Dec 2024 12:38:24 -0500</pubDate>
-    <lastBuildDate>Tue, 24 Dec 2024 12:38:24 -0500</lastBuildDate>
+    <pubDate>Tue, 24 Dec 2024 12:43:43 -0500</pubDate>
+    <lastBuildDate>Tue, 24 Dec 2024 12:43:43 -0500</lastBuildDate>
     <generator>Jekyll v4.3.4</generator>
     
       <item>
         <title>2 New Applications of zk-SNARKs (Free Ideas!)</title>
-        <description>&lt;h1 id=&quot;2-free-ideas-i-dont-have-the-time-to-execute-on&quot;&gt;2 free ideas I don’t have the time to execute on&lt;/h1&gt;
-
-&lt;p&gt;This blog post is inspired by &lt;a href=&quot;https://soatok.blog/2024/12/09/ideas-and-execution/&quot;&gt;a similar blog post by Soatok&lt;/a&gt;. This semester at grad school, I had a couple of ideas for real-world applications where zk-SNARKs would be useful, but I didn’t have the time to write code or implement them. I particularly think that idea 1 would be a fun startup/at least an Ethereum hackathon idea.&lt;/p&gt;
+        <description>&lt;p&gt;This blog post is inspired by &lt;a href=&quot;https://soatok.blog/2024/12/09/ideas-and-execution/&quot;&gt;a similar blog post by Soatok&lt;/a&gt;. This semester at grad school, I had a couple of ideas for real-world applications where zk-SNARKs would be useful, but I didn’t have the time to write code or implement them. I particularly think that idea 1 would be a fun startup/at least an Ethereum hackathon idea.&lt;/p&gt;
 
 &lt;h2 id=&quot;idea-1-zk-quantitative-strategies-for-stock-trading&quot;&gt;Idea 1: zk Quantitative Strategies for Stock Trading&lt;/h2&gt;
 &lt;p&gt;This idea is inspired by an issue of Matt Levine’s Money Stuff. It is &lt;a href=&quot;https://newsletterhunt.com/emails/56933&quot;&gt;the story about Jane Street vs Millennium here&lt;/a&gt;. To summarize the story, there is an ongoing lawsuit between two large quantitative hedge funds. Jane Street is suing Millennium because they believe that some people Millennium poached from Jane Street stole some sort of simple but counterintuitive and lucrative quantitative trading strategy and started using it at Millennium. The evidence has to do with patterns in the market changing and Jane Street’s profits being affected. Quantitative strategies are simple mechanical rules for how to trade stocks. They can range anywhere from simple rules like “buy $NVDA when it has gone down 15% in the last day” to complicated ML models that use a lot of data. They can be worth billions of dollars.&lt;/p&gt;
