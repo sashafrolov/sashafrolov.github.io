@@ -13,9 +13,11 @@ A recent direction of work in zero-knowledge proofs is "exploit sharing", where 
 
 I think there is an interesting combination of these two ideas in "Zero-Knowledge Quantitative Strategy Sharing". Here, a person trying to sell a quantitative strategy (like an ex-Jane Street person), would provide a zero-knowledge proof that their strategy performs well on past data. Furthermore, they could provide a commitment to their strategy, and then provide a zero-knowledge proof a month later that the strategy performed well on the market in that time. This could decrease the level of trust required in these kinds of financial transactions. 
 
-You can go further with this idea. You could have an anonymous, trustless hedge fund, where anonymous quants prove that they know effective quantitative strategies before they sell them to you. Even further, the hedge fund could not even be required to know the strategies it is trading on. The strategy owner could just send proofs that the strategy they committed to produced a certain sequence of trades, on which the hedge fund will then trade. In this system, anonymous analysts could get access to capital, just by proving that they know effective strategies.
+You can go further with this idea. You could have an anonymous, trustless hedge fund (maybe running on-chain or in a TEE), where anonymous quants prove that they know effective quantitative strategies before they sell them to you. Even further, the hedge fund could not even be required to know the strategies it is trading on. The strategy owner could just send proofs that the strategy they committed to produced a certain sequence of trades, on which the hedge fund will then trade. In this system, anonymous analysts could get access to capital, just by proving that they know effective strategies.
 
 This would probably improve market liquidity/efficiency by having fewer hedge funds have a monopoly over certain trades/strategies.
+
+As pointed out by Natanael on Bluesky, this "anonymous hedge fund" idea has the issue that the owners of the strategies could then trade against the fund once they reveal the strategies. I didn't think about this! Likewise, you would probably have to charge some fee for committing to a strategy so that users would not be able to submit a bunch of random strategies and hope that some of them are successful.
 
 ## Idea 2: HSTS Header Database for Tor with zk-SNARKs
 To learn more about this idea, please look at [this paper from PETS 2024](https://petsymposium.org/popets/2024/popets-2024-0020.pdf) called "CoStricTor: Collaborative HTTP Strict Transport Security in Tor Browser".
@@ -28,8 +30,10 @@ There is one major issue with this system, which is that malicious users can add
 
 On its face, this protocol doesn't work. The issue is that you normally can't use zk-SNARKs directly to build a TLS oracle/zkTLS setup. You normally need trusted hardware or MPC to check that a piece of data actually came from a TLS connection with some party. The Tor setting offers an easy fix. Your Tor traffic necessarily goes through an exit node before going to its destination. The exit node your Tor traffic goes through sees your TLS traffic with the website you are communicating with. The user can attach a zero-knowledge proof that the TLS traffic that the exit node sees decrypts to a stream containing a given HSTS header. This gives you a TLS oracle!
 
-Then, the exit node could verify the zero-knowledge proof, and submit it to the shared database. You now have the CoStricTor system with data validation (after working out some details). This is a decent bit of engineering, but I think it would be cool.
+Then, the exit node could verify the zero-knowledge proof, and submit it to the shared database. You now have the CoStricTor system with data validation (after working out some details). There is still some trust required here, though it is an improvement over the original CoStricTor system. You must trust that your exit node will actually verify the proofs and send them to the HSTS header database. Secondly, if a client and exit node collude, they can still add garbage HSTS headers to the database. There are workarounds to both of these issues, such as having a subset of trusted entrance nodes that are guaranteed to generate random routing paths, so the likelihood of hitting a colluding node is lower. This is a decent bit of engineering, but I think it would be cool.
 
 ## Conclusion
 
 I hope you found this interesting. I am giving these ideas away for free, but if you do use the idea, please mention me somewhere/tell me about it. Thanks!
+
+Thanks to [Natanael](https://bsky.app/profile/natanael.bsky.social) on Bluesky for pointing out some details with both ideas that I had not considered! (the ability for a strategy owner to trade against the fund in idea 1, and the issue of collusion in idea 2). 
