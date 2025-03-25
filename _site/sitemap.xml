@@ -3,6 +3,21 @@
   
     
     <url>
+      <loc>http://localhost:4000/blog/2025/03/zkvm-design-tradeoffs</loc>
+      
+        <lastmod>2025-03-25T06:30:15-04:00</lastmod>
+      
+      
+        <changefreq>monthly</changefreq>
+      
+      
+        <priority>0.5</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>http://localhost:4000/blog/2024/12/new-snark-applications</loc>
       
         <lastmod>2024-12-24T07:30:15-05:00</lastmod>
@@ -36,7 +51,7 @@
     <url>
       <loc>http://localhost:4000/404.html</loc>
       
-        <lastmod>2024-12-28T11:18:19-05:00</lastmod>
+        <lastmod>2025-03-25T14:30:23-04:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -51,7 +66,7 @@
     <url>
       <loc>http://localhost:4000/blog/</loc>
       
-        <lastmod>2024-12-28T11:18:19-05:00</lastmod>
+        <lastmod>2025-03-25T14:30:23-04:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -66,7 +81,7 @@
     <url>
       <loc>http://localhost:4000/feed.xml</loc>
       
-        <lastmod>2024-12-28T11:18:19-05:00</lastmod>
+        <lastmod>2025-03-25T14:30:23-04:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -81,7 +96,7 @@
     <url>
       <loc>http://localhost:4000/</loc>
       
-        <lastmod>2024-12-28T11:18:19-05:00</lastmod>
+        <lastmod>2025-03-25T14:30:23-04:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -96,7 +111,7 @@
     <url>
       <loc>http://localhost:4000/css/main.css</loc>
       
-        <lastmod>2024-12-28T11:18:19-05:00</lastmod>
+        <lastmod>2025-03-25T14:30:23-04:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
@@ -113,7 +128,7 @@
     <url>
       <loc>http://localhost:4000/css/main.css.map</loc>
       
-        <lastmod>2024-12-28T11:18:19-05:00</lastmod>
+        <lastmod>2025-03-25T14:30:23-04:00</lastmod>
       
       
         <changefreq>monthly</changefreq>
