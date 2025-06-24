@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Cryptography Stuff</title>
-  <meta name="description" content="bem bom bom
-">
+  <title>Some thoughts on industry vs. academia 1 year into grad school</title>
+  <meta name="description" content="As of the time of writing this blog post, it has been about a year since I left my job at Meta to go to grad school. People somewhat frequently ask me about ...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://localhost:4000/blog/">
+  <link rel="canonical" href="http://localhost:4000/blog/2025/06/industry-vs-academia">
   <link rel="alternate" type="application/rss+xml" title="Sasha Frolov's Website" href="http://localhost:4000/feed.xml" />
 <link rel='stylesheet' id='open-sans-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300italic%2C400italic%2C600italic%2C300%2C400%2C600&#038;subset=latin%2Clatin-ext&#038;ver=4.2.4' type='text/css' media='all' />
 <link href='https://fonts.googleapis.com/css?family=Titillium+Web:600italic,600,400,400italic' rel='stylesheet' type='text/css'>
@@ -66,49 +65,42 @@
         <div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">Cryptography Stuff</h1>
+    <h1 class="post-title">Some thoughts on industry vs. academia 1 year into grad school</h1>
+    <p class="post-meta">Posted on June 20, 2025 by   
+
+  in
+  
+  <a href="/categories/#school" title="school">school</a>&nbsp;
+  
+
+
+</p>
   </header>
 
   <article class="post-content">
-    <p>Blog about cryptography and maybe other things.</p>
+    <p>As of the time of writing this blog post, it has been about a year since I left my job at Meta to go to grad school. People somewhat frequently ask me about the experience of moving from big tech to academia. I have seen a couple of blog posts comparing industry and academia which I thought were pretty inane and said generic stuff like “industry is more applied while academia is more theoretical”. I would like to offer a more concrete perspective based on my experiences this year.</p>
 
-<ul class="listing">
+<h1 id="skills-from-industry-that-are-useful-in-grad-school">Skills from industry that are useful in grad school</h1>
 
-  
-  
-    
-    <li class="listing-seperator">2025</li>
-  
-  <li class="listing-item">
-    <time datetime="2025-06-20">2025-06-20</time>
-    <a href="/blog/2025/06/industry-vs-academia" title="Some thoughts on industry vs. academia 1 year into grad school">Some thoughts on industry vs. academia 1 year into grad school</a>
-  </li>
+<p>It has been interesting to see what skills transfer from Meta to grad school. One skill that has repeatedly proved valuable is <em>code review</em>. At Meta, all code had to be reviewed and approved by a teammate before it could be committed to the codebase, and I got decently good at reading new code and offering suggestions. Some of my collaborators this year were new to programming zk-SNARKs, and being able to give feedback on their code helped them ramp up quickly.</p>
 
-  
-  
-  <li class="listing-item">
-    <time datetime="2025-03-25">2025-03-25</time>
-    <a href="/blog/2025/03/zkvm-design-tradeoffs" title="Trade-offs and Pitfalls in zkVM design (or, some ways to make your zkVM code 3-10 times slower)">Trade-offs and Pitfalls in zkVM design (or, some ways to make your zkVM code 3-10 times slower)</a>
-  </li>
+<p>Relatedly, <em>reading code</em>/<em>using code search</em> has been a really valuable skill. A common method for programming at Meta was to use the code search tool to see how other people did something, and then reuse their solution for yourself. The current code search feature on GitHub does most of what Meta’s code search did. Furthermore, being able to quickly read code and use code search/click to definition to find where code implements some functionality also ended up being really helpful. As an example, these skills were useful for understanding various buggy/unexpected behaviors in some SNARK libraries I used. I didn’t appreciate that these were somewhat Meta specific skills until leaving.</p>
 
-  
-  
-    
-    <li class="listing-seperator">2024</li>
-  
-  <li class="listing-item">
-    <time datetime="2024-12-24">2024-12-24</time>
-    <a href="/blog/2024/12/new-snark-applications" title="2 New Applications of zk-SNARKs (Free Ideas!)">2 New Applications of zk-SNARKs (Free Ideas!)</a>
-  </li>
+<h1 id="stuff-meta-does-better-than-academia">Stuff Meta does better than academia</h1>
 
-  
-  
-  <li class="listing-item">
-    <time datetime="2024-12-17">2024-12-17</time>
-    <a href="/blog/2024/12/shenandoah-itinerary" title="My Shenandoah National Park Itinerary">My Shenandoah National Park Itinerary</a>
-  </li>
+<p>Next, I would like to talk about things that Meta did better than academia (and in some cases, things that I think Ph.D. advisors could really learn from). As I said before, I think code review is really valuable for getting new students/engineers to improve at any type of programming, but especially in a weird programming model like zk-SNARKs/programmable cryptography. I felt like I really helped my collaborators with certain instances of code review, and that I saw some codebases for papers that could have done with some code review (soundness errors, incomplete code, etc.). At a higher level, new software engineers on my team/at Meta got assigned mentors. Mentoring was pretty hands-on, at the level of code review and project planning. I thought that this model was a lot better for helping somebody who has only done undergrad coursework transition to working on long-term ambiguous projects than the more hands-off model of a lot of advisors. I am not sure if this is universal, but it also seemed like this advising model was also better at getting people to think critically and suggest improvements for code/frameworks that they work with.</p>
 
-</ul>
+<p>Meta was also much better at managing distractions/stress than academia. One of my biggest complaints about grad school from the first 2 semesters was how often classes/bureaucracy/seminars/being poor/something else kept me distracted from doing good work. There were multiple times where I had a good idea for something research-related and then just couldn’t act on it for another 2 days because of a combination of things from the previous list. This is compared to Meta, where I could basically code for all day minus 1 or 2 hours, and was doing good quality work much more often. I don’t know what the solution is, but I think people running graduate programs could really benefit from decreasing the amount of distractions. This includes: not sending so many emails per day, decreasing the required courseload, making funding stuff simpler, having fewer but better seminars, etc, etc.</p>
+
+<p>I also have found that I am just more stressed in grad school than I was in industry, which also makes it harder to do good work. This seems like a hard thing to improve, but the two worst parts for me were paper deadlines and everybody having a website where you can go see how much smarter they are than you.</p>
+
+<h1 id="stuff-academia-does-better-than-industry">Stuff academia does better than industry</h1>
+
+<p>Lastly, I would like to talk about what grad school does better than Meta. This will probably be the most generic paragraph of the post. I like the extra freedom in grad school, and the ability (most of the time) to screw off and just read something or otherwise pursue something interesting. I also felt way more freedom to have ideas for projects. Something that continuously bothered me at Meta was how little control I had over the project ideas for my team, and there is a lot more freedom to contribute in this regard. The feeling that the work I am doing is a more fundamental contribution to science, as opposed to random stuff Meta needs done is also nice. I realize this paragraph was weirdly short, but it is more about not having anything interesting to say than being miserable at the moment.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>I hope this is interesting to somebody. If you have any (non-obvious) thoughts about industry vs. academia, please contact me by email or Bluesky or something. I would be curious to hear!</p>
 
   </article>
 
