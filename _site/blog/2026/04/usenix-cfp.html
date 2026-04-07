@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>About the example ethics appendices in the USENIX Call for Papers</title>
+  <meta name="description" content="TL;DRThe USENIX Security ‘26 Call for Papers has some examples of papers with well-written ethics appendices, which are now required to submit to the confere...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4000/blog/2026/04/usenix-cfp">
+  <link rel="alternate" type="application/rss+xml" title="Sasha Frolov's Website" href="http://localhost:4000/feed.xml" />
+<link rel='stylesheet' id='open-sans-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300italic%2C400italic%2C600italic%2C300%2C400%2C600&#038;subset=latin%2Clatin-ext&#038;ver=4.2.4' type='text/css' media='all' />
+<link href='https://fonts.googleapis.com/css?family=Titillium+Web:600italic,600,400,400italic' rel='stylesheet' type='text/css'>
+
+
+
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Sasha Frolov's Website</a>
+
+
+    <nav class="site-nav">
+
+      <a href="#" class="menu-icon menu.open">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>  
+
+    <div class="trigger"><h1>Main Navigation</h1>
+
+ <ul class="menu">
+
+    
+    
+     <li><a href="/blog/" class="page-link">My Blog</a>
+    
+    </li>
+    
+    </ul>
+
+     </div>  
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">About the example ethics appendices in the USENIX Call for Papers</h1>
+    <p class="post-meta">Posted on April 7, 2026 by   
+
+  in
+  
+  <a href="/categories/#conferences" title="conferences">conferences</a>&nbsp;
+  
+
+
+</p>
+  </header>
+
+  <article class="post-content">
+    <h1 id="tldr">TL;DR</h1>
+
+<p>The USENIX Security ‘26 Call for Papers has some examples of papers with well-written ethics appendices, which are now required to submit to the conference. I think the example ethics appendix for cryptography is weird, and indicates that the current version of the Ethics Guidelines is not well-suited to the field of cryptography.</p>
+
+<h1 id="introduction">Introduction</h1>
+
+<p>As of this year, the USENIX Security conference requires all authors to write an “Ethics Appendix”, which discusses the ethical implications of their work. The <a href="https://www.usenix.org/conference/usenixsecurity26/call-for-papers#ethics">Call for Papers</a> contains an ethical framework based on the Menlo Report, which they recommend that authors follow. At a high level, it requires you to determine a set of “stakeholders” that might be impacted by your work, discuss potential harms of your work, how you mitigated them, and why you decided to publish the work.</p>
+
+<p>They give examples of ethics appendices that they think are well written. One is for my area (cryptography). The example Ethics Appendix is in <a href="https://www.usenix.org/sites/default/files/sec26cycle1-li-example.pdf">this paper</a> on pages 16-17. <strong>As an initial disclaimer</strong>, I think this is a good paper on zk-SNARKs! I think this ethics appendix is the result of honestly trying to write an ethics appendix per the guidelines and honestly responding to incentives.</p>
+
+<h1 id="arguments-made-in-the-ethics-appendix">Arguments made in the Ethics Appendix</h1>
+<p>I will highlight a few arguments made in the ethics appendix which I think are weird and do not represent the stated goals of the ethics appendices. Some of the points raised in this ethics appendix make sense (like how better zk-SNARKs have both positive and negative uses), but they are padded out with a bunch of points which seem unnecessary. I have quoted a bit more than half of the points made in the ethics appendix below:</p>
+
+<h2 id="on-crediting-the-research-team">On crediting the research team</h2>
+<p><img src="../../../images/usenixcfp/properlycreditresearchteamquote.png" alt="On crediting the research team" style="width: 80%;" /></p>
+
+<p>The authors argue that their work is ethical because they properly acknowledged the contributions of everybody who worked on the project.</p>
+
+<h2 id="on-respect-for-persons">On “Respect for Persons”</h2>
+<p><img src="../../../images/usenixcfp/respectforpersonsquote.png" alt="On &quot;Respect for Persons&quot;" style="width: 80%;" /></p>
+
+<p>“Respect for persons” is one of the axes of ethical work from the Menlo Report/the CfP. The authors argue that their work achieves “Respect for Persons” because they properly cited prior work.</p>
+
+<h2 id="on-justice">On “Justice”</h2>
+<p><img src="../../../images/usenixcfp/justicequote.png" alt="On &quot;Justice&quot;" style="width: 80%;" /></p>
+
+<p>“Justice” is another axis from the Menlo Report, and the authors argue that their work is just because they throughly documented the schemes in their work.</p>
+
+<h2 id="on-public-impact">On “Public Impact”</h2>
+<p><img src="../../../images/usenixcfp/publicimpactquote.png" alt="On &quot;Public Impact&quot;" style="width: 80%;" /></p>
+
+<p>The authors argue that they reduced the potential negative impacts of their work by properly documenting design tradeoffs.</p>
+
+<h2 id="on-potential-harms">On “Potential Harms”</h2>
+<p><img src="../../../images/usenixcfp/documentedsecurityassumptionsquote.png" alt="On &quot;Potential Harms&quot;" style="width: 80%;" /></p>
+
+<p>The authors again argue that their work is ethical because they properly documented their scheme.</p>
+
+<h2 id="on-decision-to-publish">On “Decision to Publish”</h2>
+<p><img src="../../../images/usenixcfp/decisiontopublishpoint2.png" alt="On &quot;Decision to Publish&quot;" style="width: 80%;" /></p>
+
+<p>The USENIX Security CFP asks authors to discuss why they decided to publish a given work. In this excerpt, the authors state that they decided to publish because they checked that their work was correct and they believe it’s novel.</p>
+
+<h2 id="review">Review</h2>
+
+<p>To recap the arguments made by the authors which I quoted, they state that their work is ethical because they properly credited everybody involved in the project, because they properly cited prior work, and because they properly documented the scheme they constructed. They also state that they ethically decided to publish their research because they checked that it is correct/novel. These are baseline research practices! These feel like the authors were trying to write something underneath each required point in the ethics appendix. In my view (and I think most people’s), ethics appendices should be about the nontrivial ethical implications of your work, and not a box-checking exercise. By linking this paper’s appendix as an example of a well-written ethics appendix, we are partially endorsing this type of writing. I tried 2 AI detectors (Pangram/GPTZero), and both of them thought this appendix was at least partially AI-generated, though I don’t think this is the most important part of the discussion.</p>
+
+<h1 id="suggestions-for-improvement">Suggestions for improvement</h1>
+<p>As previously stated, I don’t think the authors of this paper are bad actors. I am not naming them/the paper so this article doesn’t come up in Google searches for the author’s names. I think they wrote this ethics appendix by honestly trying to follow the guidelines in the USENIX Security Call for Papers.</p>
+
+<p>Consequently, I think this is good evidence that current guidelines for ethics appendices need to be updated. Here are some suggestions that I think could improve the situation:</p>
+
+<ul>
+  <li>The USENIX framework has a lot of headings you need to hit (Stakeholders, Ethical principles, Harms, Mitigations, Decision). I think it would be helpful if you could just leave out the discussion of some of these points if they don’t apply to your work. I think the Ethics Appendix in this paper would have been a lot stronger if the authors felt like they could just discuss the relevant points (like dual-use potential of zk-SNARKs) and omit points where there isn’t an interesting discussion.</li>
+  <li>As my advisor Gabe has suggested, maybe the requirements for these ethics appendices should be adjusted per-field, since the current ethics guidelines seem pretty tailored to systems security. Many cryptography papers just write proofs and algorithms, which don’t map that cleanly onto the terms/categories in the Menlo Report. I still think it’s important to discuss ethics, and it would be good to have a more cryptography-focused version of these ethics guidelines.</li>
+</ul>
+
+<p>I hope the discussion in this post serves as a good explanation of my issues with the current ethics guidelines/examples in the USENIX Security CfP.</p>
+
+<p>As a parting thought, this blog post reminds me of a discussion I had about <a href="https://scholarspace.manoa.hawaii.edu/server/api/core/bitstreams/811fc7c8-ec64-49ba-9a24-db176e47b84f/content">this article</a> in my Freshman Writing Seminar at Cornell. This article is part of a similar discussion about ethics requirements for research from the academic linguistics community. One argument that comes up in this paper is that these additional ethics requirements are typically written by senior professors, while graduate students are typically the ones who actually have to do them. Graduate students typically don’t have a seat at the table when defining these extra requirements. If you have a say in this process, please be empathetic to the time and energy of the graduate students who actually have to do this work.</p>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+<!--     <h2 class="footer-heading">Sasha Frolov's Website</h2> -->
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li><strong>Sasha Frolov's Website</strong></li>
+
+          <li>
+              <span class="icon  icon--email">
+                <svg fill="#828282" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+              </span>
+
+              <span class="username"> sfrolov (at sign) umd (dot) edu</span>
+          </li>
+
+          <li>Website built using <a href="https://github.com/svmiller/steve-ngvb-jekyll-template/tree/master">Steven Miller's template.</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="contact-list">
+          
+          <li>
+            <a href="https://github.com/sashafrolov">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">sashafrolov</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://bsky.app/profile/sasha.place">
+              <span class="icon  icon--bluesky">
+                <svg viewBox="0 0 512 512"><path fill="#828282" d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2c42.1-31.6 110.3-56 110.3 21.8c0 15.5-8.9 130.5-14.1 149.2C478.2 298 412 314.6 353.1 304.5c102.9 17.5 129.1 75.5 72.5 133.5c-107.4 110.2-154.3-27.6-166.3-62.9l0 0c-1.7-4.9-2.6-7.8-3.3-7.8s-1.6 3-3.3 7.8l0 0c-12 35.3-59 173.1-166.3 62.9c-56.5-58-30.4-116 72.5-133.5C100 314.6 33.8 298 15.7 233.1C10.4 214.4 1.5 99.4 1.5 83.9c0-77.8 68.2-53.4 110.3-21.8z"/></svg>
+              </span>
+
+              <span class="username">sasha.place</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+          <ul class="contact-list">
+            
+            <li>
+              <a href="https://scholar.google.com/citations?hl=en&user=CfXEkmoAAAAJ">
+                <span class="icon  icon--scholar">
+                  <svg viewBox="0 0 512 512"><path fill="#828282" d="M390.9 298.5c0 0 0 .1 .1 .1c9.2 19.4 14.4 41.1 14.4 64C405.3 445.1 338.5 512 256 512s-149.3-66.9-149.3-149.3c0-22.9 5.2-44.6 14.4-64h0c1.7-3.6 3.6-7.2 5.6-10.7c4.4-7.6 9.4-14.7 15-21.3c27.4-32.6 68.5-53.3 114.4-53.3c33.6 0 64.6 11.1 89.6 29.9c9.1 6.9 17.4 14.7 24.8 23.5c5.6 6.6 10.6 13.8 15 21.3c2 3.4 3.8 7 5.5 10.5zm26.4-18.8c-30.1-58.4-91-98.4-161.3-98.4s-131.2 40-161.3 98.4L0 202.7 256 0 512 202.7l-94.7 77.1z"/></svg>              </span>
+  
+                <span class="username">Google Scholar</span>
+              </a>
+            </li>
+            
+
+            
+            <li>
+              <a href="https://linkedin.com/in/sashafrolov/">
+                <span class="icon  icon--scholar">
+                  <svg viewBox="0 0 448 512"><path fill="#828282" d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z"/></svg></span>
+  
+                <span class="username">LinkedIn</span>
+              </a>
+            </li>
+            
+          </ul>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+  </body>
+
+</html>
+<!-- d.s.m.s.050600.062508.030515.080516.030818 | "Baby, I'm Yours" -->
