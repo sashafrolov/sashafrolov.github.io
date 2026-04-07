@@ -16,7 +16,7 @@ As of this year, the USENIX Security conference requires all authors to write an
 They give examples of ethics appendices that they think are well written. One is for my area (cryptography). The example Ethics Appendix is in [this paper](https://www.usenix.org/sites/default/files/sec26cycle1-li-example.pdf) on pages 16-17. **As an initial disclaimer**, I think this is a good paper on zk-SNARKs! I think this ethics appendix is the result of honestly trying to write an ethics appendix per the guidelines and honestly responding to incentives.
 
 # Arguments made in the Ethics Appendix
-I will highlight a few arguments made in the ethics appendix which I think are weird and do not represent the stated goals of the ethics appendices. Some of the points raised in this ethics appendix make sense (like how better zk-SNARKs have both positive and negative uses), but they are padded out with a bunch of points which seem unnecessary. I have quoted a bit more than half of the points made in the ethics appendix below:
+I will highlight a few arguments made in the ethics appendix which I think are weird and do not represent the stated goals of the ethics appendices. I have made an effort to not take these quotes out of context. Some of the points raised in this ethics appendix make sense (like how better zk-SNARKs have both positive and negative uses), but they are padded out with a bunch of points which seem unnecessary. I have quoted a bit more than half of the points made in the ethics appendix below:
 
 ## On crediting the research team
 ![On crediting the research team](../../../images/usenixcfp/properlycreditresearchteamquote.png){: style="width: 80%;"}
