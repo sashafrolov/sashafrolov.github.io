@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Understanding LogUp*: A Royal Road</title>
+  <meta name="description" content="Lookup arguments are a commonly used technique in zk-SNARKs which allow a prover to show that some set of values appears in a public table. We also often wan...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://localhost:4000/blog/2026/10/understanding-logup-star">
+  <link rel="alternate" type="application/rss+xml" title="Sasha Frolov's Website" href="http://localhost:4000/feed.xml" />
+<link rel='stylesheet' id='open-sans-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300italic%2C400italic%2C600italic%2C300%2C400%2C600&#038;subset=latin%2Clatin-ext&#038;ver=4.2.4' type='text/css' media='all' />
+<link href='https://fonts.googleapis.com/css?family=Titillium+Web:600italic,600,400,400italic' rel='stylesheet' type='text/css'>
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+
+
+
+
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Sasha Frolov's Website</a>
+
+
+    <nav class="site-nav">
+
+      <a href="#" class="menu-icon menu.open">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>  
+
+    <div class="trigger"><h1>Main Navigation</h1>
+
+ <ul class="menu">
+
+    
+    
+     <li><a href="/blog/" class="page-link">My Blog</a>
+    
+    </li>
+    
+    </ul>
+
+     </div>  
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Understanding LogUp*: A Royal Road</h1>
+    <p class="post-meta">Posted on October 11, 2026 by   
+
+  in
+  
+  <a href="/categories/#zkproofs" title="zkproofs">zkproofs</a>&nbsp;
+  
+
+
+</p>
+  </header>
+
+  <article class="post-content">
+    <p>Lookup arguments are a commonly used technique in zk-SNARKs which allow a prover to show that some set of values appears in a public table. We also often want to show something stronger: showing that some values appear at certain specific indices in a table. This is called an <em>indexed lookup</em>.</p>
+
+<p><a href="https://eprint.iacr.org/2025/946">LogUp*</a>, by Lev Soukhanov, is a lookup argument for indexed lookups for small tables. Its main benefits are that the prover can avoid committing to the entire vector of lookup results, that it works over small characteristic (read: binary) fields and that the prover avoids committing to large field elements as much as possible.</p>
+
+<p>This post is inspired by <a href="https://building-babylon.net/2024/02/14/a-royal-road-to-logup/">Understanding LogUp: A Royal Road</a>, which I thought was a good explanation of ordinary LogUp. It will (hopefully) not require too much prior knowledge of LogUp.</p>
+
+<h2 id="what-are-we-trying-to-prove">What are we trying to prove?</h2>
+
+<p>Suppose we have a table \(T\) with \(M\) entries and an array of indices \(I\) with \(N\) entries. Looking up each index produces an array \(V\), where \(V[i]=T[I[i]]\) for all indices \(i\) in \(0\) through \(N\).</p>
+
+<p>For example,</p>
+
+\[T=(t_0,t_1,t_2,t_3), \qquad I=(2,0,2,1)\]
+
+<p>gives</p>
+
+\[V=(t_2,t_0,t_2,t_1).\]
+
+<p>We assume the prover has already committed (via a polynomial commitment scheme) to \(T\) and \(I\) (or that \(T\)’s multilinear extension can be evaluated cheaply, if it is sufficiently structured).</p>
+
+<p>One way to prove the validity of a set of lookups is to commit to \(V\) too, and then use ordinary LogUp to show that every pair \((I[i],V[i])\) appears in the table of pairs \((j,T[j])\). Including the index in each pair is the standard trick to convert an unindexed lookup argument like LogUp into an indexed one.</p>
+
+<p>This works (though only in finite fields whose characteristic is greater than the number of lookups \(N\)) but it requires committing to \(N\) additional field elements. Consider proving \(\sim 2^{20}\) lookups into a table with \(\sim 2^8\) entries (a common parameter regime for LogUp-style lookup arguments). Even though the table is small, the prover now has to commit to an additional vector of \(\sim 2^{20}\) lookup results. If the indices are small and the table values are large extension field elements, that extra commitment can be much more expensive than the commitment to \(I\). In contexts like elliptic curve-based PCSs, or binary field-based ones, the bitlengths of the values that we commit to are very relevant to the costs of the scheme.</p>
+
+<p>The <a href="https://eprint.iacr.org/2025/946">LogUp* paper</a> targets the cost of committing to \(I\), and is tailored to a binary field context, where field characteristic is small and committing to short field elements is cheaper.</p>
+
+<h2 id="what-do-we-need-to-do-with-the-lookup-result-v">What do we need to do with the lookup result V?</h2>
+
+<p>In proof systems based on the sumcheck protocol (i.e. basically all of the current state of the art ones), when proving some property of a vector \(V\), the “hard part” of working with \(V\) is often just proving an evaluation claim \(V(r)=e.\)</p>
+
+<p>Here \(V(r)\) is the multilinear extension of the vector \(V\) evaluated at a random point \(r\) derived from the surrounding protocol. We can ask for this evaluation even when \(V\) has not been committed on its own (this is called virtualization). To avoid committing to \(V(r)\) directly, LogUp* will prove this evaluation using the existing commitments/evaluation access to \(T\) and \(I\).</p>
+
+<p>A big part of LogUp* is showing how to evaluate the multilinear extension of \(V\) in terms of the extensions of \(T\) and \(I\). Let \(N=2^n\), and let the bits of each row index \(i\) be \((i_0,\ldots,i_{n-1})\). For \(r\in\mathbb F^n\), define</p>
+
+\[\operatorname{eq}(r,i)
+=
+\prod_{k=0}^{n-1}
+\big(r_ki_k+(1-r_k)(1-i_k)\big).\]
+
+<p>When the values \(i_k\) are bits, each factor “selects” either \(r_k\) or \(1-r_k\). These equality polynomials can be used for interpolation over the Boolean hypercube, so</p>
+
+\[V(r)=\sum_{i=0}^{N-1}\operatorname{eq}(r,i)V[i]
+=\sum_{i=0}^{N-1}\operatorname{eq}(r,i)T[I[i]].\]
+
+<p>Thus, the evaluation of \(V\) we want is a weighted sum of table entries of \(T\). The weights for each entry of \(T\) are determined by \(r\) and which lookups are fo that entry.</p>
+
+<p>To illustrate these weights, consider the same, previously discussed lookup table instance with 4 entries. The values of the equality polynomial for interpolating the extension of a table with 4 entries are:</p>
+
+\[\begin{aligned}
+a&amp;=(1-r_0)(1-r_1), &amp; b&amp;=r_0(1-r_1),\\
+c&amp;=(1-r_0)r_1,     &amp; d&amp;=r_0r_1,
+\end{aligned}\]
+
+<p>Now, computing the multilinear extension of \(V\) for the previous example of a lookup instance:</p>
+
+\[V(r)=at_2+bt_0+ct_2+dt_1.\]
+
+<p>Both \(a\) and \(c\) correspond to lookups for the same table entry, so we can collect them:</p>
+
+\[V(r)=bt_0+dt_1+(a+c)t_2.\]
+
+<p>Now we have one weight per table entry. These weights are:</p>
+
+\[Y=(b,d,a+c,0).\]
+
+<p>Note that the last entry is zero because there were no lookups to \(t_3\), but \(t_2\)’s weight is the sum of multiple evaluations of the \(\operatorname{eq}\) polynomial, because it had multiple lookups.</p>
+
+<h2 id="collecting-the-weights">Collecting the weights</h2>
+
+<p>This same regrouping works for any index array. Define</p>
+
+\[Y_j=\sum_{i:I_i=j}\operatorname{eq}(r,i).\]
+
+<p>When expressing the evaluation of the multilinear extension of \(V\) in terms of a weighted sum of entries of \(T\), \(Y_j\) is the weight assigned to table entry \(j\) in this sum. To compute \(Y\), start with \(M\) zeros. Visit each row \(i\) and add its weight \(\operatorname{eq}(r,i)\) to entry \(I_i\). Now, rearranging sums:</p>
+
+\[\begin{aligned}
+V(r)
+&amp;=\sum_{i=0}^{N-1}\operatorname{eq}(r,i)T_{I_i}\\
+&amp;=\sum_{j=0}^{M-1}T_j
+   \left(\sum_{i:I_i=j}\operatorname{eq}(r,i)\right)\\
+&amp;=\sum_{j=0}^{M-1}T_jY_j
+=\langle T,Y\rangle.
+\end{aligned}\]
+
+<p>This suggests a cheaper way of proving an evaluation of \(V\): commit to \(Y\) and show that \(\langle T,Y\rangle=e\). This additional polynomial commitment is to a vector of \(M\) entries, independent of the number of lookups.</p>
+
+<p>The inner product claim can be proved via a standard use of the sumcheck protocol. Assuming \(M=2^m\), we view \(T\) and \(Y\) as multilinear polynomials and run sumcheck on</p>
+
+\[\sum_{y\in\{0,1\}^m}T(y)Y(y)=e.\]
+
+<p>Sumcheck reduces this claim to evaluations of \(T\) and \(Y\) at a random point. The prover can then open polynomial commitments to these vectors.</p>
+
+<p>We can now translate this regrouping into the paper’s terminology. I personally found the paper’s terminology somewhat confusing, and prefer the previously explained treatement. The lookup array \(V\) is called the <strong>pullback</strong> of \(T\) along \(I\), written \(I^*T\). The collected weights \(Y\) are the <strong>pushforward</strong> of \(\operatorname{eq}(r,\cdot)\) along \(I\), written \(I_*\operatorname{eq}(r,\cdot)\). More generally, for any row weights \(X\),</p>
+
+\[(I_*X)_j=\sum_{i:I_i=j}X_i,
+\qquad
+\langle I^*T,X\rangle=\langle T,I_*X\rangle.\]
+
+<p>The paper calls this <em>pullback-pushforward duality</em>. It is the regrouping we just did, where we collected the sums of the equality polynomial and committed to these, rather than committing to the looked up table values.</p>
+
+<p>Of course, one more step remains. We have not yet specified a protocol for checking that \(Y\) is valid. The prover could commit to an arbitrary \(Y\), and we still need to check that each \(Y_j\) is the sum of the weights assigned to table position \(j\).</p>
+
+<h2 id="checking-the-collected-weights-with-logup">Checking the collected weights with LogUp</h2>
+
+<p>Ordinary LogUp uses the “LogUp identity” to check the validity of a set of lookups:</p>
+
+\[\sum_i\frac{1}{C-w_i}
+=
+\sum_j\frac{m_j}{C-t_j},\]
+
+<p>where \(m_j\) records how many times table value \(t_j\) was used. \(C\) is a random challenge. For simplicity, suppose the table values are distinct. It should be obvious to see that this identity holds if the \(m_j\)’s correctly count the number of lookups to each value, and it is not hard to show that converse, that this equation fails with high probability if the \(m_j\)’s are invalid.</p>
+
+<p>Our goal is to check the validity of the weights \(Y\) using a LogUp-like identity, so it is natural to replace the quantities in the numerators on either side of the equation with values of \(\operatorname{eq}\) rather than \(1\) and \(m_j\). Likewise, we put table indices in the denominators.</p>
+
+<p>We need distinct field elements to label the table positions. Write \(\iota(j)\) for the label of position \(j\). Over a prime field whose characteristic exceeds \(M\), we can use \(\iota(j)=j\). We’ll return to binary fields below. Some works on lookup arguments avoid this formalism, assume high field characteristic, and just jump between \(j\) as an index and \(j\) as a field element.</p>
+
+<p>The rewritten LogUp identity to check is</p>
+
+\[\sum_{i=0}^{N-1}
+\frac{\operatorname{eq}(r,i)}{C-\iota(I_i)}
+=
+\sum_{j=0}^{M-1}
+\frac{Y_j}{C-\iota(j)}
+\tag{LogUp* Identity}
+\label{eq:logup-star}\]
+
+<p>In our small example, the left hand side is</p>
+
+\[\frac{a}{C-\iota(2)}
++\frac{b}{C-\iota(0)}
++\frac{c}{C-\iota(2)}
++\frac{d}{C-\iota(1)}.\]
+
+<p>Collecting the two fractions with denominator \(C-\iota(2)\) gives exactly the right-hand side for \(Y=(b,d,a+c,0)\).</p>
+
+<p>Why does this force the prover to use the correct \(Y\)? Treating \(C\) as a formal variable, and looking for an equality of rational functions, let</p>
+
+\[\Delta_j=Y_j-\sum_{i:I_i=j}\operatorname{eq}(r,i)\]
+
+<p>be the error at table position \(j\). After subtracting the left hand side from the right hand side of the LogUp* identity, we get</p>
+
+\[\sum_{j=0}^{M-1}\frac{\Delta_j}{C-\iota(j)}=0.\]
+
+<p>Then, multiply through by \(D(C)=\prod_{j=0}^{M-1}(C-\iota(j))\). If we then substitute \(C=\iota(k)\) for any \(k\), every term except the one containing \(\Delta_k\) vanishes, leaving</p>
+
+\[\Delta_k\prod_{j\ne k}\big(\iota(k)-\iota(j)\big)=0.\]
+
+<p>The labels are \(\iota\) are distinct, so every factor in the product is nonzero. This shows that \(\Delta_k=0\) for all \(k\), so the LogUp* identity shows that all the weights were collected correctly. Conversely, if any \(\Delta _k\) is not zero, then the two sides of the LogUp* identity are not equal with high probability.</p>
+
+<p>Notice that the table’s values don’t appear in this check. LogUp* uses the indices to check \(Y\) and uses \(T\) in the separate inner product check.</p>
+
+<h2 id="replacing-the-formal-variable-with-a-random-challenge">Replacing the formal variable with a random challenge</h2>
+
+<p>The LogUp* verifier cannot check the LogUp* identity by looking at functions as formal rational functions. Instead, as is common in SNARKs, after the prover commits to \(Y\), the verifier samples a random field element \(c\) and checks the LogUp* identity at a random challenge point \(C=c\).</p>
+
+<p>If \(Y\) is wrong, clearing the denominators gives a nonzero polynomial. As usual, the probability this polynomial evaluates to zero is low. The paper gives a conservative soundness error from this random check of \((N+M)/\lvert\mathbb{F}\rvert\) for this step. The LogUp* verifier should also reject challenges which make some index in the LogUp* identity have a zero denominator.</p>
+
+<h2 id="proving-a-sum-of-fractions">Proving a sum of fractions</h2>
+
+<p>We have now reduced the problem to showing the equality of two sums of fractions. We now need some protocol to prove the evaluations of two sums of fractions. This is basically the same thing that needs to be shown in regular LogUp.</p>
+
+<p>The GKR version of LogUp, from <a href="https://eprint.iacr.org/2023/1284">Papini and Haböck</a>, proves this sum with a specialized GKR circuit. It arranges the additions of fractions in a binary tree. Recall grade school fraction addition:</p>
+
+\[\frac{a_0}{b_0}+\frac{a_1}{b_1}
+=
+\frac{a_0b_1+a_1b_0}{b_0b_1}.\]
+
+<p>Consider a circuit to evaluate the sum of a bunch of fractions. The GKR version of LogUp’s circuit does this by storing each fraction as a numerator,denominator pair. It combines adjacent pairs and their results, continuing up a binary tree, using the standard fractional addition identity. Every internal node uses only additions and multiplications. The root contains one numerator and one denominator for the entire sum.</p>
+
+<p>For LogUp*, the two trees of fractional additions have leaves</p>
+
+\[\left(\operatorname{eq}(r,i),\,c-\iota(I_i)\right)
+\qquad\text{and}\qquad
+\left(Y_j,\,c-\iota(j)\right).\]
+
+<p>corresponding to the numerators and denominators in the LogUp* identity. To begin the GKR protocol, the prover sends the two root pair results, say \((P_L,Q_L)\) and \((P_R,Q_R)\). The verifier checks</p>
+
+\[P_LQ_R=P_RQ_L,
+\qquad Q_L\ne0,\quad Q_R\ne0.\]
+
+<p>Nonzero checks are important, since they prevent soundness issues from dividing by zero.</p>
+
+<p>As usual for the GKR protocol, the specialized instance of GKR checks the arithmetic in each tree by working from the root down to the leaves, with an application of the sumcheck protocol at each layer. The prover computes the intermediate values, but does not need to commit to them. At the leaves, GKR has reduced proving the computation to a few polynomial evaluations:</p>
+
+<ul>
+  <li>On the lookup side, the verifier can evaluate \(\operatorname{eq}(r,\cdot)\) itself efficiently. Evaluating the denominator requires an opening proof of the committed index column \(\widehat I_i=\iota(I_i)\).</li>
+  <li>On the table side, the numerator requires an opening of \(Y\). The denominator comes from the public table position labels, whose multilinear extension can be evaluated directly with properly chosen encodings.</li>
+</ul>
+
+<p>Together with the earlier product sumcheck for \(\langle T,Y\rangle=e\), this proves the lookup evaluation. The only additional committed vector is \(Y\).</p>
+
+<h2 id="the-protocol-in-order">The protocol in order</h2>
+
+<p>Putting the pieces together, suppose \(T\) and the encoded index column \(I\) are already committed, and we must prove \((I^*T)(r)=e\) for the surrounding protocol.</p>
+
+<ol>
+  <li>The prover computes \(Y_j=\sum_{i:I_i=j}\operatorname{eq}(r,i)\) and commits to \(Y\).</li>
+  <li>The verifier samples \(c\).</li>
+  <li>The prover and verifier engage in the GKR protocol to check that the LogUp* identity holds for \(Y\) evaluated at \(c\).</li>
+  <li>The prover and verifier run a degree 2 product sumcheck to show \(\langle T,Y\rangle=e\).</li>
+  <li>The prover provides openings for the evaluations of the encoded index column \(I\), \(T\), and \(Y\) required by those reductions.</li>
+</ol>
+
+<h2 id="why-small-characteristic-is-okay">Why small characteristic is okay</h2>
+
+<p>The other cool feature of LogUp* is that it works in small characteristic fields. Ordinary LogUp has a problem in small characteristic fields. In a field of characteristic \(p\), a value that is looked up \(p\) times contributes</p>
+
+\[\underbrace{\frac{1}{C-w}+\cdots+\frac{1}{C-w}}_{p\text{ times}}
+=
+\frac{p}{C-w}=0.\]
+
+<p>to its sum. If \(w\) is absent from the table, the identity is still valid! In characteristic two, just two lookups are enough to trigger this issue. This is why the LogUp requires the witness length to be smaller than the field characteristic.</p>
+
+<p>LogUp* checks sums of weights over fields. Our proof that every \(\Delta_j\) is zero used only distinct labels, so it works in every characteristic. The numerators are distinct, random evaluations of the \(\operatorname{eq}\) polynomial, and integer counts don’t appear anywhere, so the previously mentioned type of cancellation doesn’t happen.</p>
+
+<p>Eagen and Haböck’s <a href="https://eprint.iacr.org/2024/2067">Bypassing the characteristic bound in LogUp</a> also solves this problem. LogUp*’s approach has a connection to their approach. The Eagen/Haböck approach gives witness occurrences algebraic weights (rather than 1) to prevent their counts from vanishing. The functions \(\operatorname{eq}(r,i)\), viewed as polynomials in \(r\), form a multilinear Lagrange basis. A sum over any nonempty set of rows is therefore a nonzero polynomial, even in characteristic two (it must evaluate to \(1\) at the summed Boolean rows).</p>
+
+<p>Such a polynomial can still vanish at a random point, but this is now a low probability event, guaranteed by the Schwarz-Zippel lemma.</p>
+
+<p>There is one more important detail for binary fields. The labels \(0,1,2,\ldots\) passed to the \(\iota\) functions cannot mean repeated addition of \(1\), since \(2=0\) in binary fields. Instead, the bits of a table index should be encoded using field elements \(b_0,\ldots,b_{m-1}\) that are linearly independent over \(\mathbb F_2\):</p>
+
+\[\iota(j)=\sum_{k=0}^{m-1}j_kb_k.\]
+
+<p>Most binary field field libraries/implementations have some standard convenient mapping from bits to a binary field element which looks like this. This gives distinct labels to all \(2^m\) table positions. The multilinear extension of these indices is the linear polynomial \(J(z)=\sum_k b_kz_k\), so the verifier can evaluate the table-side denominator as \(c-J(z)\).</p>
+
+<h2 id="several-lookups-into-one-table">Several lookups into one table</h2>
+
+<p>Many applications of LogUp care about having multiple columns (i.e. multiple lookup vectors which we wish to prove valid). Many papers on LogUp specify how to batch checking the validity of multiple lookup columns into one check. The same type of trick is possible for LogUp*. If several (\(L\)) index arrays use the same table, we can collect all their weights into one \(Y\). Suppose their evaluation claims are</p>
+
+\[(I_\ell^*T)(r_\ell)=e_\ell,
+\qquad 0\le\ell&lt;L.\]
+
+<p>After these claims are fixed, sample a batching challenge \(\gamma\) and define</p>
+
+\[Y_j=
+\sum_{\ell=0}^{L-1}\gamma^\ell
+\sum_{i:(I_\ell)_i=j}\operatorname{eq}(r_\ell,i).\]
+
+<p>The inner product check becomes</p>
+
+\[\langle T,Y\rangle=\sum_{\ell=0}^{L-1}\gamma^\ell e_\ell.\]
+
+<p>For the fractional check, the lookup-side fractions for \(L\) lookup columns need to be summed, with the numerators for array \(\ell\) scaled by \(\gamma^\ell\). The table side still uses the single array \(Y\). This is a very standard random batching trick in SNARKs, which adds an additional soundness error of at most \((L-1)/\lvert\mathbb{F}\rvert\).</p>
+
+<h2 id="conclusiontotal-savings">Conclusion/total savings</h2>
+
+<p>LogUp* achieves a few cool things. It has a savings in terms of what gets committed. A commitment to an vector of length \(N\) of lookup results is replaced by a commitment to a vector of length \(M\) of weights. Many lookups into a small table can therefore share a small auxiliary commitment, even when the table values live in a large field.</p>
+
+<p>LogUp* is particularly beneficial when coupled with a PCS which has costs which scale in terms of the bitlengths of the coefficients of polynomials they commit to. The index vector \(I\) can be made to have values of small bitlengths, and it is the only length \(N\) vector committed by LogUp*. The weight vector \(Y\) does have full length field elements, but its length only scales in \(M\).</p>
+
+<p>And lastly, LogUp* works nicely over binary fields :). I found it somewhat hard to understand at first, but I think it is a cool modification of LogUp which achieves a few cool properties at the same time.</p>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li><a href="https://building-babylon.net/2024/02/14/a-royal-road-to-logup/">Understanding LogUp: A Royal Road</a>, Benjamin Wilson.</li>
+  <li><a href="https://eprint.iacr.org/2022/1530">Multivariate lookups based on logarithmic derivatives</a>, Ulrich Haböck.</li>
+  <li><a href="https://eprint.iacr.org/2023/1284">Improving logarithmic derivative lookups using GKR</a>, Shahar Papini and Ulrich Haböck.</li>
+  <li><a href="https://eprint.iacr.org/2024/2067">Bypassing the characteristic bound in LogUp</a>, Liam Eagen and Ulrich Haböck.</li>
+  <li><a href="https://eprint.iacr.org/2025/946">LogUp*: faster, cheaper LogUp argument for small-table indexed lookups</a>, Lev Soukhanov.</li>
+</ul>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+<!--     <h2 class="footer-heading">Sasha Frolov's Website</h2> -->
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li><strong>Sasha Frolov's Website</strong></li>
+
+          <li>
+              <span class="icon  icon--email">
+                <svg fill="#828282" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
+              </span>
+
+              <span class="username"> sfrolov (at sign) umd (dot) edu</span>
+          </li>
+
+          <li>Website built using <a href="https://github.com/svmiller/steve-ngvb-jekyll-template/tree/master">Steven Miller's template.</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="contact-list">
+          
+          <li>
+            <a href="https://github.com/sashafrolov">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">sashafrolov</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://bsky.app/profile/sasha.place">
+              <span class="icon  icon--bluesky">
+                <svg viewBox="0 0 512 512"><path fill="#828282" d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2c42.1-31.6 110.3-56 110.3 21.8c0 15.5-8.9 130.5-14.1 149.2C478.2 298 412 314.6 353.1 304.5c102.9 17.5 129.1 75.5 72.5 133.5c-107.4 110.2-154.3-27.6-166.3-62.9l0 0c-1.7-4.9-2.6-7.8-3.3-7.8s-1.6 3-3.3 7.8l0 0c-12 35.3-59 173.1-166.3 62.9c-56.5-58-30.4-116 72.5-133.5C100 314.6 33.8 298 15.7 233.1C10.4 214.4 1.5 99.4 1.5 83.9c0-77.8 68.2-53.4 110.3-21.8z"/></svg>
+              </span>
+
+              <span class="username">sasha.place</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+          <ul class="contact-list">
+            
+            <li>
+              <a href="https://scholar.google.com/citations?hl=en&user=CfXEkmoAAAAJ">
+                <span class="icon  icon--scholar">
+                  <svg viewBox="0 0 512 512"><path fill="#828282" d="M390.9 298.5c0 0 0 .1 .1 .1c9.2 19.4 14.4 41.1 14.4 64C405.3 445.1 338.5 512 256 512s-149.3-66.9-149.3-149.3c0-22.9 5.2-44.6 14.4-64h0c1.7-3.6 3.6-7.2 5.6-10.7c4.4-7.6 9.4-14.7 15-21.3c27.4-32.6 68.5-53.3 114.4-53.3c33.6 0 64.6 11.1 89.6 29.9c9.1 6.9 17.4 14.7 24.8 23.5c5.6 6.6 10.6 13.8 15 21.3c2 3.4 3.8 7 5.5 10.5zm26.4-18.8c-30.1-58.4-91-98.4-161.3-98.4s-131.2 40-161.3 98.4L0 202.7 256 0 512 202.7l-94.7 77.1z"/></svg>              </span>
+  
+                <span class="username">Google Scholar</span>
+              </a>
+            </li>
+            
+
+            
+            <li>
+              <a href="https://linkedin.com/in/sashafrolov/">
+                <span class="icon  icon--scholar">
+                  <svg viewBox="0 0 448 512"><path fill="#828282" d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z"/></svg></span>
+  
+                <span class="username">LinkedIn</span>
+              </a>
+            </li>
+            
+          </ul>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+  </body>
+
+</html>
+<!-- d.s.m.s.050600.062508.030515.080516.030818 | "Baby, I'm Yours" -->

@@ -6,9 +6,308 @@
 </description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 07 Apr 2026 17:03:47 -0400</pubDate>
-    <lastBuildDate>Tue, 07 Apr 2026 17:03:47 -0400</lastBuildDate>
+    <pubDate>Mon, 12 Oct 2026 20:14:39 -0400</pubDate>
+    <lastBuildDate>Mon, 12 Oct 2026 20:14:39 -0400</lastBuildDate>
     <generator>Jekyll v4.3.4</generator>
+    
+      <item>
+        <title>Understanding LogUp*: A Royal Road</title>
+        <description>&lt;p&gt;Lookup arguments are a commonly used technique in zk-SNARKs which allow a prover to show that some set of values appears in a public table. We also often want to show something stronger: showing that some values appear at certain specific indices in a table. This is called an &lt;em&gt;indexed lookup&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://eprint.iacr.org/2025/946&quot;&gt;LogUp*&lt;/a&gt;, by Lev Soukhanov, is a lookup argument for indexed lookups for small tables. Its main benefits are that the prover can avoid committing to the entire vector of lookup results, that it works over small characteristic (read: binary) fields and that the prover avoids committing to large field elements as much as possible.&lt;/p&gt;
+
+&lt;p&gt;This post is inspired by &lt;a href=&quot;https://building-babylon.net/2024/02/14/a-royal-road-to-logup/&quot;&gt;Understanding LogUp: A Royal Road&lt;/a&gt;, which I thought was a good explanation of ordinary LogUp. It will (hopefully) not require too much prior knowledge of LogUp.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-are-we-trying-to-prove&quot;&gt;What are we trying to prove?&lt;/h2&gt;
+
+&lt;p&gt;Suppose we have a table \(T\) with \(M\) entries and an array of indices \(I\) with \(N\) entries. Looking up each index produces an array \(V\), where \(V[i]=T[I[i]]\) for all indices \(i\) in \(0\) through \(N\).&lt;/p&gt;
+
+&lt;p&gt;For example,&lt;/p&gt;
+
+\[T=(t_0,t_1,t_2,t_3), \qquad I=(2,0,2,1)\]
+
+&lt;p&gt;gives&lt;/p&gt;
+
+\[V=(t_2,t_0,t_2,t_1).\]
+
+&lt;p&gt;We assume the prover has already committed (via a polynomial commitment scheme) to \(T\) and \(I\) (or that \(T\)’s multilinear extension can be evaluated cheaply, if it is sufficiently structured).&lt;/p&gt;
+
+&lt;p&gt;One way to prove the validity of a set of lookups is to commit to \(V\) too, and then use ordinary LogUp to show that every pair \((I[i],V[i])\) appears in the table of pairs \((j,T[j])\). Including the index in each pair is the standard trick to convert an unindexed lookup argument like LogUp into an indexed one.&lt;/p&gt;
+
+&lt;p&gt;This works (though only in finite fields whose characteristic is greater than the number of lookups \(N\)) but it requires committing to \(N\) additional field elements. Consider proving \(\sim 2^{20}\) lookups into a table with \(\sim 2^8\) entries (a common parameter regime for LogUp-style lookup arguments). Even though the table is small, the prover now has to commit to an additional vector of \(\sim 2^{20}\) lookup results. If the indices are small and the table values are large extension field elements, that extra commitment can be much more expensive than the commitment to \(I\). In contexts like elliptic curve-based PCSs, or binary field-based ones, the bitlengths of the values that we commit to are very relevant to the costs of the scheme.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://eprint.iacr.org/2025/946&quot;&gt;LogUp* paper&lt;/a&gt; targets the cost of committing to \(I\), and is tailored to a binary field context, where field characteristic is small and committing to short field elements is cheaper.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-do-we-need-to-do-with-the-lookup-result-v&quot;&gt;What do we need to do with the lookup result V?&lt;/h2&gt;
+
+&lt;p&gt;In proof systems based on the sumcheck protocol (i.e. basically all of the current state of the art ones), when proving some property of a vector \(V\), the “hard part” of working with \(V\) is often just proving an evaluation claim \(V(r)=e.\)&lt;/p&gt;
+
+&lt;p&gt;Here \(V(r)\) is the multilinear extension of the vector \(V\) evaluated at a random point \(r\) derived from the surrounding protocol. We can ask for this evaluation even when \(V\) has not been committed on its own (this is called virtualization). To avoid committing to \(V(r)\) directly, LogUp* will prove this evaluation using the existing commitments/evaluation access to \(T\) and \(I\).&lt;/p&gt;
+
+&lt;p&gt;A big part of LogUp* is showing how to evaluate the multilinear extension of \(V\) in terms of the extensions of \(T\) and \(I\). Let \(N=2^n\), and let the bits of each row index \(i\) be \((i_0,\ldots,i_{n-1})\). For \(r\in\mathbb F^n\), define&lt;/p&gt;
+
+\[\operatorname{eq}(r,i)
+=
+\prod_{k=0}^{n-1}
+\big(r_ki_k+(1-r_k)(1-i_k)\big).\]
+
+&lt;p&gt;When the values \(i_k\) are bits, each factor “selects” either \(r_k\) or \(1-r_k\). These equality polynomials can be used for interpolation over the Boolean hypercube, so&lt;/p&gt;
+
+\[V(r)=\sum_{i=0}^{N-1}\operatorname{eq}(r,i)V[i]
+=\sum_{i=0}^{N-1}\operatorname{eq}(r,i)T[I[i]].\]
+
+&lt;p&gt;Thus, the evaluation of \(V\) we want is a weighted sum of table entries of \(T\). The weights for each entry of \(T\) are determined by \(r\) and which lookups are fo that entry.&lt;/p&gt;
+
+&lt;p&gt;To illustrate these weights, consider the same, previously discussed lookup table instance with 4 entries. The values of the equality polynomial for interpolating the extension of a table with 4 entries are:&lt;/p&gt;
+
+\[\begin{aligned}
+a&amp;amp;=(1-r_0)(1-r_1), &amp;amp; b&amp;amp;=r_0(1-r_1),\\
+c&amp;amp;=(1-r_0)r_1,     &amp;amp; d&amp;amp;=r_0r_1,
+\end{aligned}\]
+
+&lt;p&gt;Now, computing the multilinear extension of \(V\) for the previous example of a lookup instance:&lt;/p&gt;
+
+\[V(r)=at_2+bt_0+ct_2+dt_1.\]
+
+&lt;p&gt;Both \(a\) and \(c\) correspond to lookups for the same table entry, so we can collect them:&lt;/p&gt;
+
+\[V(r)=bt_0+dt_1+(a+c)t_2.\]
+
+&lt;p&gt;Now we have one weight per table entry. These weights are:&lt;/p&gt;
+
+\[Y=(b,d,a+c,0).\]
+
+&lt;p&gt;Note that the last entry is zero because there were no lookups to \(t_3\), but \(t_2\)’s weight is the sum of multiple evaluations of the \(\operatorname{eq}\) polynomial, because it had multiple lookups.&lt;/p&gt;
+
+&lt;h2 id=&quot;collecting-the-weights&quot;&gt;Collecting the weights&lt;/h2&gt;
+
+&lt;p&gt;This same regrouping works for any index array. Define&lt;/p&gt;
+
+\[Y_j=\sum_{i:I_i=j}\operatorname{eq}(r,i).\]
+
+&lt;p&gt;When expressing the evaluation of the multilinear extension of \(V\) in terms of a weighted sum of entries of \(T\), \(Y_j\) is the weight assigned to table entry \(j\) in this sum. To compute \(Y\), start with \(M\) zeros. Visit each row \(i\) and add its weight \(\operatorname{eq}(r,i)\) to entry \(I_i\). Now, rearranging sums:&lt;/p&gt;
+
+\[\begin{aligned}
+V(r)
+&amp;amp;=\sum_{i=0}^{N-1}\operatorname{eq}(r,i)T_{I_i}\\
+&amp;amp;=\sum_{j=0}^{M-1}T_j
+   \left(\sum_{i:I_i=j}\operatorname{eq}(r,i)\right)\\
+&amp;amp;=\sum_{j=0}^{M-1}T_jY_j
+=\langle T,Y\rangle.
+\end{aligned}\]
+
+&lt;p&gt;This suggests a cheaper way of proving an evaluation of \(V\): commit to \(Y\) and show that \(\langle T,Y\rangle=e\). This additional polynomial commitment is to a vector of \(M\) entries, independent of the number of lookups.&lt;/p&gt;
+
+&lt;p&gt;The inner product claim can be proved via a standard use of the sumcheck protocol. Assuming \(M=2^m\), we view \(T\) and \(Y\) as multilinear polynomials and run sumcheck on&lt;/p&gt;
+
+\[\sum_{y\in\{0,1\}^m}T(y)Y(y)=e.\]
+
+&lt;p&gt;Sumcheck reduces this claim to evaluations of \(T\) and \(Y\) at a random point. The prover can then open polynomial commitments to these vectors.&lt;/p&gt;
+
+&lt;p&gt;We can now translate this regrouping into the paper’s terminology. I personally found the paper’s terminology somewhat confusing, and prefer the previously explained treatement. The lookup array \(V\) is called the &lt;strong&gt;pullback&lt;/strong&gt; of \(T\) along \(I\), written \(I^*T\). The collected weights \(Y\) are the &lt;strong&gt;pushforward&lt;/strong&gt; of \(\operatorname{eq}(r,\cdot)\) along \(I\), written \(I_*\operatorname{eq}(r,\cdot)\). More generally, for any row weights \(X\),&lt;/p&gt;
+
+\[(I_*X)_j=\sum_{i:I_i=j}X_i,
+\qquad
+\langle I^*T,X\rangle=\langle T,I_*X\rangle.\]
+
+&lt;p&gt;The paper calls this &lt;em&gt;pullback-pushforward duality&lt;/em&gt;. It is the regrouping we just did, where we collected the sums of the equality polynomial and committed to these, rather than committing to the looked up table values.&lt;/p&gt;
+
+&lt;p&gt;Of course, one more step remains. We have not yet specified a protocol for checking that \(Y\) is valid. The prover could commit to an arbitrary \(Y\), and we still need to check that each \(Y_j\) is the sum of the weights assigned to table position \(j\).&lt;/p&gt;
+
+&lt;h2 id=&quot;checking-the-collected-weights-with-logup&quot;&gt;Checking the collected weights with LogUp&lt;/h2&gt;
+
+&lt;p&gt;Ordinary LogUp uses the “LogUp identity” to check the validity of a set of lookups:&lt;/p&gt;
+
+\[\sum_i\frac{1}{C-w_i}
+=
+\sum_j\frac{m_j}{C-t_j},\]
+
+&lt;p&gt;where \(m_j\) records how many times table value \(t_j\) was used. \(C\) is a random challenge. For simplicity, suppose the table values are distinct. It should be obvious to see that this identity holds if the \(m_j\)’s correctly count the number of lookups to each value, and it is not hard to show that converse, that this equation fails with high probability if the \(m_j\)’s are invalid.&lt;/p&gt;
+
+&lt;p&gt;Our goal is to check the validity of the weights \(Y\) using a LogUp-like identity, so it is natural to replace the quantities in the numerators on either side of the equation with values of \(\operatorname{eq}\) rather than \(1\) and \(m_j\). Likewise, we put table indices in the denominators.&lt;/p&gt;
+
+&lt;p&gt;We need distinct field elements to label the table positions. Write \(\iota(j)\) for the label of position \(j\). Over a prime field whose characteristic exceeds \(M\), we can use \(\iota(j)=j\). We’ll return to binary fields below. Some works on lookup arguments avoid this formalism, assume high field characteristic, and just jump between \(j\) as an index and \(j\) as a field element.&lt;/p&gt;
+
+&lt;p&gt;The rewritten LogUp identity to check is&lt;/p&gt;
+
+\[\sum_{i=0}^{N-1}
+\frac{\operatorname{eq}(r,i)}{C-\iota(I_i)}
+=
+\sum_{j=0}^{M-1}
+\frac{Y_j}{C-\iota(j)}
+\tag{LogUp* Identity}
+\label{eq:logup-star}\]
+
+&lt;p&gt;In our small example, the left hand side is&lt;/p&gt;
+
+\[\frac{a}{C-\iota(2)}
++\frac{b}{C-\iota(0)}
++\frac{c}{C-\iota(2)}
++\frac{d}{C-\iota(1)}.\]
+
+&lt;p&gt;Collecting the two fractions with denominator \(C-\iota(2)\) gives exactly the right-hand side for \(Y=(b,d,a+c,0)\).&lt;/p&gt;
+
+&lt;p&gt;Why does this force the prover to use the correct \(Y\)? Treating \(C\) as a formal variable, and looking for an equality of rational functions, let&lt;/p&gt;
+
+\[\Delta_j=Y_j-\sum_{i:I_i=j}\operatorname{eq}(r,i)\]
+
+&lt;p&gt;be the error at table position \(j\). After subtracting the left hand side from the right hand side of the LogUp* identity, we get&lt;/p&gt;
+
+\[\sum_{j=0}^{M-1}\frac{\Delta_j}{C-\iota(j)}=0.\]
+
+&lt;p&gt;Then, multiply through by \(D(C)=\prod_{j=0}^{M-1}(C-\iota(j))\). If we then substitute \(C=\iota(k)\) for any \(k\), every term except the one containing \(\Delta_k\) vanishes, leaving&lt;/p&gt;
+
+\[\Delta_k\prod_{j\ne k}\big(\iota(k)-\iota(j)\big)=0.\]
+
+&lt;p&gt;The labels are \(\iota\) are distinct, so every factor in the product is nonzero. This shows that \(\Delta_k=0\) for all \(k\), so the LogUp* identity shows that all the weights were collected correctly. Conversely, if any \(\Delta _k\) is not zero, then the two sides of the LogUp* identity are not equal with high probability.&lt;/p&gt;
+
+&lt;p&gt;Notice that the table’s values don’t appear in this check. LogUp* uses the indices to check \(Y\) and uses \(T\) in the separate inner product check.&lt;/p&gt;
+
+&lt;h2 id=&quot;replacing-the-formal-variable-with-a-random-challenge&quot;&gt;Replacing the formal variable with a random challenge&lt;/h2&gt;
+
+&lt;p&gt;The LogUp* verifier cannot check the LogUp* identity by looking at functions as formal rational functions. Instead, as is common in SNARKs, after the prover commits to \(Y\), the verifier samples a random field element \(c\) and checks the LogUp* identity at a random challenge point \(C=c\).&lt;/p&gt;
+
+&lt;p&gt;If \(Y\) is wrong, clearing the denominators gives a nonzero polynomial. As usual, the probability this polynomial evaluates to zero is low. The paper gives a conservative soundness error from this random check of \((N+M)/\lvert\mathbb{F}\rvert\) for this step. The LogUp* verifier should also reject challenges which make some index in the LogUp* identity have a zero denominator.&lt;/p&gt;
+
+&lt;h2 id=&quot;proving-a-sum-of-fractions&quot;&gt;Proving a sum of fractions&lt;/h2&gt;
+
+&lt;p&gt;We have now reduced the problem to showing the equality of two sums of fractions. We now need some protocol to prove the evaluations of two sums of fractions. This is basically the same thing that needs to be shown in regular LogUp.&lt;/p&gt;
+
+&lt;p&gt;The GKR version of LogUp, from &lt;a href=&quot;https://eprint.iacr.org/2023/1284&quot;&gt;Papini and Haböck&lt;/a&gt;, proves this sum with a specialized GKR circuit. It arranges the additions of fractions in a binary tree. Recall grade school fraction addition:&lt;/p&gt;
+
+\[\frac{a_0}{b_0}+\frac{a_1}{b_1}
+=
+\frac{a_0b_1+a_1b_0}{b_0b_1}.\]
+
+&lt;p&gt;Consider a circuit to evaluate the sum of a bunch of fractions. The GKR version of LogUp’s circuit does this by storing each fraction as a numerator,denominator pair. It combines adjacent pairs and their results, continuing up a binary tree, using the standard fractional addition identity. Every internal node uses only additions and multiplications. The root contains one numerator and one denominator for the entire sum.&lt;/p&gt;
+
+&lt;p&gt;For LogUp*, the two trees of fractional additions have leaves&lt;/p&gt;
+
+\[\left(\operatorname{eq}(r,i),\,c-\iota(I_i)\right)
+\qquad\text{and}\qquad
+\left(Y_j,\,c-\iota(j)\right).\]
+
+&lt;p&gt;corresponding to the numerators and denominators in the LogUp* identity. To begin the GKR protocol, the prover sends the two root pair results, say \((P_L,Q_L)\) and \((P_R,Q_R)\). The verifier checks&lt;/p&gt;
+
+\[P_LQ_R=P_RQ_L,
+\qquad Q_L\ne0,\quad Q_R\ne0.\]
+
+&lt;p&gt;Nonzero checks are important, since they prevent soundness issues from dividing by zero.&lt;/p&gt;
+
+&lt;p&gt;As usual for the GKR protocol, the specialized instance of GKR checks the arithmetic in each tree by working from the root down to the leaves, with an application of the sumcheck protocol at each layer. The prover computes the intermediate values, but does not need to commit to them. At the leaves, GKR has reduced proving the computation to a few polynomial evaluations:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;On the lookup side, the verifier can evaluate \(\operatorname{eq}(r,\cdot)\) itself efficiently. Evaluating the denominator requires an opening proof of the committed index column \(\widehat I_i=\iota(I_i)\).&lt;/li&gt;
+  &lt;li&gt;On the table side, the numerator requires an opening of \(Y\). The denominator comes from the public table position labels, whose multilinear extension can be evaluated directly with properly chosen encodings.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Together with the earlier product sumcheck for \(\langle T,Y\rangle=e\), this proves the lookup evaluation. The only additional committed vector is \(Y\).&lt;/p&gt;
+
+&lt;h2 id=&quot;the-protocol-in-order&quot;&gt;The protocol in order&lt;/h2&gt;
+
+&lt;p&gt;Putting the pieces together, suppose \(T\) and the encoded index column \(I\) are already committed, and we must prove \((I^*T)(r)=e\) for the surrounding protocol.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The prover computes \(Y_j=\sum_{i:I_i=j}\operatorname{eq}(r,i)\) and commits to \(Y\).&lt;/li&gt;
+  &lt;li&gt;The verifier samples \(c\).&lt;/li&gt;
+  &lt;li&gt;The prover and verifier engage in the GKR protocol to check that the LogUp* identity holds for \(Y\) evaluated at \(c\).&lt;/li&gt;
+  &lt;li&gt;The prover and verifier run a degree 2 product sumcheck to show \(\langle T,Y\rangle=e\).&lt;/li&gt;
+  &lt;li&gt;The prover provides openings for the evaluations of the encoded index column \(I\), \(T\), and \(Y\) required by those reductions.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;why-small-characteristic-is-okay&quot;&gt;Why small characteristic is okay&lt;/h2&gt;
+
+&lt;p&gt;The other cool feature of LogUp* is that it works in small characteristic fields. Ordinary LogUp has a problem in small characteristic fields. In a field of characteristic \(p\), a value that is looked up \(p\) times contributes&lt;/p&gt;
+
+\[\underbrace{\frac{1}{C-w}+\cdots+\frac{1}{C-w}}_{p\text{ times}}
+=
+\frac{p}{C-w}=0.\]
+
+&lt;p&gt;to its sum. If \(w\) is absent from the table, the identity is still valid! In characteristic two, just two lookups are enough to trigger this issue. This is why the LogUp requires the witness length to be smaller than the field characteristic.&lt;/p&gt;
+
+&lt;p&gt;LogUp* checks sums of weights over fields. Our proof that every \(\Delta_j\) is zero used only distinct labels, so it works in every characteristic. The numerators are distinct, random evaluations of the \(\operatorname{eq}\) polynomial, and integer counts don’t appear anywhere, so the previously mentioned type of cancellation doesn’t happen.&lt;/p&gt;
+
+&lt;p&gt;Eagen and Haböck’s &lt;a href=&quot;https://eprint.iacr.org/2024/2067&quot;&gt;Bypassing the characteristic bound in LogUp&lt;/a&gt; also solves this problem. LogUp*’s approach has a connection to their approach. The Eagen/Haböck approach gives witness occurrences algebraic weights (rather than 1) to prevent their counts from vanishing. The functions \(\operatorname{eq}(r,i)\), viewed as polynomials in \(r\), form a multilinear Lagrange basis. A sum over any nonempty set of rows is therefore a nonzero polynomial, even in characteristic two (it must evaluate to \(1\) at the summed Boolean rows).&lt;/p&gt;
+
+&lt;p&gt;Such a polynomial can still vanish at a random point, but this is now a low probability event, guaranteed by the Schwarz-Zippel lemma.&lt;/p&gt;
+
+&lt;p&gt;There is one more important detail for binary fields. The labels \(0,1,2,\ldots\) passed to the \(\iota\) functions cannot mean repeated addition of \(1\), since \(2=0\) in binary fields. Instead, the bits of a table index should be encoded using field elements \(b_0,\ldots,b_{m-1}\) that are linearly independent over \(\mathbb F_2\):&lt;/p&gt;
+
+\[\iota(j)=\sum_{k=0}^{m-1}j_kb_k.\]
+
+&lt;p&gt;Most binary field field libraries/implementations have some standard convenient mapping from bits to a binary field element which looks like this. This gives distinct labels to all \(2^m\) table positions. The multilinear extension of these indices is the linear polynomial \(J(z)=\sum_k b_kz_k\), so the verifier can evaluate the table-side denominator as \(c-J(z)\).&lt;/p&gt;
+
+&lt;h2 id=&quot;several-lookups-into-one-table&quot;&gt;Several lookups into one table&lt;/h2&gt;
+
+&lt;p&gt;Many applications of LogUp care about having multiple columns (i.e. multiple lookup vectors which we wish to prove valid). Many papers on LogUp specify how to batch checking the validity of multiple lookup columns into one check. The same type of trick is possible for LogUp*. If several (\(L\)) index arrays use the same table, we can collect all their weights into one \(Y\). Suppose their evaluation claims are&lt;/p&gt;
+
+\[(I_\ell^*T)(r_\ell)=e_\ell,
+\qquad 0\le\ell&amp;lt;L.\]
+
+&lt;p&gt;After these claims are fixed, sample a batching challenge \(\gamma\) and define&lt;/p&gt;
+
+\[Y_j=
+\sum_{\ell=0}^{L-1}\gamma^\ell
+\sum_{i:(I_\ell)_i=j}\operatorname{eq}(r_\ell,i).\]
+
+&lt;p&gt;The inner product check becomes&lt;/p&gt;
+
+\[\langle T,Y\rangle=\sum_{\ell=0}^{L-1}\gamma^\ell e_\ell.\]
+
+&lt;p&gt;For the fractional check, the lookup-side fractions for \(L\) lookup columns need to be summed, with the numerators for array \(\ell\) scaled by \(\gamma^\ell\). The table side still uses the single array \(Y\). This is a very standard random batching trick in SNARKs, which adds an additional soundness error of at most \((L-1)/\lvert\mathbb{F}\rvert\).&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusiontotal-savings&quot;&gt;Conclusion/total savings&lt;/h2&gt;
+
+&lt;p&gt;LogUp* achieves a few cool things. It has a savings in terms of what gets committed. A commitment to an vector of length \(N\) of lookup results is replaced by a commitment to a vector of length \(M\) of weights. Many lookups into a small table can therefore share a small auxiliary commitment, even when the table values live in a large field.&lt;/p&gt;
+
+&lt;p&gt;LogUp* is particularly beneficial when coupled with a PCS which has costs which scale in terms of the bitlengths of the coefficients of polynomials they commit to. The index vector \(I\) can be made to have values of small bitlengths, and it is the only length \(N\) vector committed by LogUp*. The weight vector \(Y\) does have full length field elements, but its length only scales in \(M\).&lt;/p&gt;
+
+&lt;p&gt;And lastly, LogUp* works nicely over binary fields :). I found it somewhat hard to understand at first, but I think it is a cool modification of LogUp which achieves a few cool properties at the same time.&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://building-babylon.net/2024/02/14/a-royal-road-to-logup/&quot;&gt;Understanding LogUp: A Royal Road&lt;/a&gt;, Benjamin Wilson.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://eprint.iacr.org/2022/1530&quot;&gt;Multivariate lookups based on logarithmic derivatives&lt;/a&gt;, Ulrich Haböck.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://eprint.iacr.org/2023/1284&quot;&gt;Improving logarithmic derivative lookups using GKR&lt;/a&gt;, Shahar Papini and Ulrich Haböck.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://eprint.iacr.org/2024/2067&quot;&gt;Bypassing the characteristic bound in LogUp&lt;/a&gt;, Liam Eagen and Ulrich Haböck.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://eprint.iacr.org/2025/946&quot;&gt;LogUp*: faster, cheaper LogUp argument for small-table indexed lookups&lt;/a&gt;, Lev Soukhanov.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 11 Oct 2026 20:00:00 -0400</pubDate>
+        <link>http://localhost:4000/blog/2026/10/understanding-logup-star</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/2026/10/understanding-logup-star</guid>
+        
+        
+        <category>zkproofs</category>
+        
+      </item>
+    
+      <item>
+        <title>Proposing some new names for Prime Fields</title>
+        <description>&lt;h1 id=&quot;tldr&quot;&gt;TL;DR&lt;/h1&gt;
+&lt;p&gt;We have nice themed names for 32-bit and 64-bit FFT-friendly prime fields (Goldilocks, KoalaBear and Baby). But what about 128-bit prime fields?! These have come up in my work, so I am proposing names for them now.&lt;/p&gt;
+
+&lt;h1 id=&quot;polarbear&quot;&gt;PolarBear&lt;/h1&gt;
+
+&lt;p&gt;I am proposing the name PolarBear for this field. It is used in Meta’s winterfell library. Also, 128-bit fields are quite large, so PolarBear feels reasonable.&lt;/p&gt;
+
+&lt;h1 id=&quot;sunbear&quot;&gt;SunBear&lt;/h1&gt;
+
+&lt;p&gt;This field is use din the Google Longfellow library, and the Sun Bear is a “long fellow”&lt;/p&gt;
+
+&lt;h1 id=&quot;squarebear&quot;&gt;SquareBear&lt;/h1&gt;
+
+&lt;p&gt;As proposed by my colleague Kai, we can call both of these the SquareBear fields because they come from approximately squaring a 64-bit prime (or squaring a ~32 bit prime twice).&lt;/p&gt;
+</description>
+        <pubDate>Fri, 26 Jun 2026 10:00:00 -0400</pubDate>
+        <link>http://localhost:4000/blog/2026/06/prime-field-names</link>
+        <guid isPermaLink="true">http://localhost:4000/blog/2026/06/prime-field-names</guid>
+        
+        
+        <category>cryptography</category>
+        
+      </item>
     
       <item>
         <title>About the example ethics appendices in the USENIX Call for Papers</title>
@@ -23,7 +322,7 @@
 &lt;p&gt;They give examples of ethics appendices that they think are well written. One is for my area (cryptography). The example Ethics Appendix is in &lt;a href=&quot;https://www.usenix.org/sites/default/files/sec26cycle1-li-example.pdf&quot;&gt;this paper&lt;/a&gt; on pages 16-17. &lt;strong&gt;As an initial disclaimer&lt;/strong&gt;, I think this is a good paper on zk-SNARKs! I think this ethics appendix is the result of honestly trying to write an ethics appendix per the guidelines and honestly responding to incentives.&lt;/p&gt;
 
 &lt;h1 id=&quot;arguments-made-in-the-ethics-appendix&quot;&gt;Arguments made in the Ethics Appendix&lt;/h1&gt;
-&lt;p&gt;I will highlight a few arguments made in the ethics appendix which I think are weird and do not represent the stated goals of the ethics appendices. Some of the points raised in this ethics appendix make sense (like how better zk-SNARKs have both positive and negative uses), but they are padded out with a bunch of points which seem unnecessary. I have quoted a bit more than half of the points made in the ethics appendix below:&lt;/p&gt;
+&lt;p&gt;I will highlight a few arguments made in the ethics appendix which I think are weird and do not represent the stated goals of the ethics appendices. I have made an effort to not take these quotes out of context. Some of the points raised in this ethics appendix make sense (like how better zk-SNARKs have both positive and negative uses), but they are padded out with a bunch of points which seem unnecessary. I have quoted a bit more than half of the points made in the ethics appendix below:&lt;/p&gt;
 
 &lt;h2 id=&quot;on-crediting-the-research-team&quot;&gt;On crediting the research team&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&quot;../../../images/usenixcfp/properlycreditresearchteamquote.png&quot; alt=&quot;On crediting the research team&quot; style=&quot;width: 80%;&quot; /&gt;&lt;/p&gt;
@@ -57,7 +356,7 @@
 
 &lt;h2 id=&quot;review&quot;&gt;Review&lt;/h2&gt;
 
-&lt;p&gt;To recap the arguments made by the authors which I quoted, they state that their work is ethical because they properly credited everybody involved in the project, because they properly cited prior work, and because they properly documented the scheme they constructed. They also state that they ethically decided to publish their research because they checked that it is correct/novel. These are baseline research practices! These feel like the authors were trying to write something underneath each required point in the ethics appendix. In my view (and I think most people’s), ethics appendices should be about the nontrivial ethical implications of your work, and not a box-checking exercise. By linking this paper’s appendix as an example of a well-written ethics appendix, we are partially endorsing this type of writing. I tried 2 AI detectors (Pangram/GPTZero), and both of them thought this appendix was at least partially AI-generated, though I don’t think this is the most important part of the discussion.&lt;/p&gt;
+&lt;p&gt;To recap the arguments made by the authors which I quoted, they state that their work is ethical because they properly credited everybody involved in the project, because they properly cited prior work, and because they properly documented the scheme they constructed. They also state that they ethically decided to publish their research because they checked that it is correct/novel. These are baseline research practices! These feel like the authors were trying to write something underneath each required point in the ethics appendix. In my view (and I think most people’s), ethics appendices should be about the nontrivial ethical implications of your work, and not a box-checking exercise. None of these points relate to anything specific about the paper. By linking this paper’s appendix as an example of a well-written ethics appendix, we are partially endorsing this type of writing. I tried 2 AI detectors (Pangram/GPTZero), and both of them thought this appendix was at least partially AI-generated, though I don’t think this is the most important part of the discussion.&lt;/p&gt;
 
 &lt;h1 id=&quot;suggestions-for-improvement&quot;&gt;Suggestions for improvement&lt;/h1&gt;
 &lt;p&gt;As previously stated, I don’t think the authors of this paper are bad actors. I am not naming them/the paper so this article doesn’t come up in Google searches for the author’s names. I think they wrote this ethics appendix by honestly trying to follow the guidelines in the USENIX Security Call for Papers.&lt;/p&gt;
